@@ -1,5 +1,6 @@
 import * as XLSX from "xlsx";
 import { nanoid } from "nanoid";
+import card from '@/templates/card.json'
 
 const frontend = process.env.REACT_APP_FRONTEND_URL
 
@@ -12,11 +13,15 @@ export class Utils {
 
     static async genTemplate() {
         try {
-            const res = await fetch(`/api/card/type`);
-            const result = await res.json();
+            // const res = await fetch(`/api/card/type`);
+            // const result = await res.json();
 
             // gen unique id for each card
-            const output = result.message.map((item) => {
+            // const output = result.message.map((item) => {
+            //     item.id = nanoid(11)
+            //     return item;
+            // })
+            const output = card.map((item) => {
                 item.id = nanoid(11)
                 return item;
             })
