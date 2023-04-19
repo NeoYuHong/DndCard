@@ -21,7 +21,6 @@ export default function Index() {
       <MultipleContainers
         containerStyle={{ marginBottom: '2.5rem' }}
         scrollable={true}
-        itemCount={10}
       />
 
     </Container>

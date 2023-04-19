@@ -47,7 +47,7 @@ const dropAnimation = {
 
 export function MultipleContainers({
     adjustScale = false,
-    itemCount = 3,
+    itemCount = 0,
     cancelDrop,
     columns,
     handle = false,
