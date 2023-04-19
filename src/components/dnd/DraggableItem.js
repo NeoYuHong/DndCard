@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 const { Item } = require("./Item");
 
-export function SortableItem({
+export function DraggableItem({
     disabled,
     id,
     data,
@@ -29,10 +29,11 @@ export function SortableItem({
         overIndex,
         transform,
         transition,
-    } = useSortable({
+    } = useDraggable({
         id,
         data
-    });
+    })
+
 
     const mounted = useMountStatus();
     const mountedWhileDragging = isDragging && !mounted;

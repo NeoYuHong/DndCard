@@ -28,6 +28,7 @@ import { Utils } from '@/helpers/utils';
 import AddModal from "../../components/modal/AddModal";
 import { multipleContainersCoordinateGetter } from "./multipleContainersCoordinateGetter";
 import PreviewModal from "../modal/PreviewModal";
+import { DraggableItem } from "./DraggableItem";
 
 const PLACEHOLDER_ID = 'placeholder';
 
@@ -299,8 +300,26 @@ export function MultipleContainers({
                                 >
                                     <SortableContext items={items[containerId]} strategy={strategy}>
                                         {items[containerId].map((data, index) => {
-                                            if (containerId === 'Template')
+                                            if (containerId === 'Template') {
                                                 data.isTemplate = true;
+                                                return (
+                                                    <DraggableItem
+                                                        disabled={isSortingContainer}
+                                                        key={data.id}
+                                                        id={data.id}
+                                                        data={data}
+                                                        index={index}
+                                                        handle={handle}
+                                                        style={getItemStyles}
+                                                        wrapperStyle={wrapperStyle}
+                                                        renderItem={renderItem}
+                                                        containerId={containerId}
+                                                        getIndex={getIndex}
+                                                        onRemove={() => handleRemove(data.id)}
+                                                        onEdit={() => handleEdit(data.id)}
+                                                    />
+                                                );
+                                            }
                                             return (
                                                 <SortableItem
                                                     disabled={isSortingContainer}
