@@ -48,7 +48,6 @@ export function MultipleContainers({
     cancelDrop,
     columns,
     handle = false,
-    items: initialItems,
     containerStyle,
     coordinateGetter = multipleContainersCoordinateGetter,
     getItemStyles = () => ({}),
@@ -62,18 +61,13 @@ export function MultipleContainers({
     scrollable,
 }) {
     const [items, setItems] = useState(
-        () =>
-            initialItems ?? {
-                Template: [
+        () => ({
+            Template: [
 
-                ],
-                Data: [
-                ],
-            }
-        // initialItems ?? {
-        //     Template: Utils.createRange(itemCount, (index) => `Template ${index + 1}`),
-        //     Data: Utils.createRange(itemCount, (index) => `Data ${index + 1}`),
-        // }
+            ],
+            Data: [
+            ],
+        })
     );
 
     useEffect(() => {
