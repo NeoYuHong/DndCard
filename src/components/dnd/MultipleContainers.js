@@ -314,8 +314,8 @@ export function MultipleContainers({
                                                         renderItem={renderItem}
                                                         containerId={containerId}
                                                         getIndex={getIndex}
-                                                        onRemove={() => handleRemove(data.id)}
-                                                        onEdit={() => handleEdit(data.id)}
+                                                        onRemove={() => handleRemove(data)}
+                                                        onEdit={() => handleEdit(data)}
                                                     />
                                                 );
                                             }
@@ -332,8 +332,8 @@ export function MultipleContainers({
                                                     renderItem={renderItem}
                                                     containerId={containerId}
                                                     getIndex={getIndex}
-                                                    onRemove={() => handleRemove(data.id)}
-                                                    onEdit={() => handleEdit(data.id)}
+                                                    onRemove={() => handleRemove(data)}
+                                                    onEdit={() => handleEdit(data)}
                                                 />
                                             );
                                         })}
@@ -671,13 +671,13 @@ export function MultipleContainers({
         document.getElementById(ModalId.addcard).checked = true;
     }
 
-    function handleRemove(id) {
-        setEditCard({ id })
+    function handleRemove(item) {
+        setEditCard(item)
         document.getElementById(ModalId.deletecard).checked = true;
     }
 
-    function handleEdit(id) {
-        setEditCard({ id })
+    function handleEdit(item) {
+        setEditCard(item)
         document.getElementById(ModalId.editcard).checked = true;
         // setItems((items) => ({
         //     ...items,

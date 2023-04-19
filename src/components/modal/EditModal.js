@@ -2,8 +2,11 @@ import { useRef } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
 import Modal from "./Modal";
+import ModalId from "./ModalId";
 
-export default function EditModal({ editCard, setCards, cards }) {
+export default function EditModal({ editCard, setItems, items }) {
+
+    const modalId = ModalId.editcard;
 
     const [editedFields, setEditedFields] = useState(null);
 
@@ -24,8 +27,6 @@ export default function EditModal({ editCard, setCards, cards }) {
 
     }, [editCard]);
 
-    const modalId = "editcard";
-
     // Save changes
     const save = () => {
 
@@ -41,29 +42,40 @@ export default function EditModal({ editCard, setCards, cards }) {
 
         if (value.current.value == 0) return;
 
-        // Parse value
-        const modifiedCards = cards.map(card => {
-
-            // if card doesn't exist
-            if (!card.id) return false
-
-            // if card is the edited card
-            if (card.id == editCard.id)
-                return editedFields
-
-            // Otherwise return the card
-            return card
-        });
-
         // Close modal
         document.getElementById(modalId).checked = false;
 
         // Save changes
-        setCards(modifiedCards)
+        setItems((items) => ({
+            ...items,
+            Data: items['Data'].map((data) => {
+                if (data.id == editCard.id)
+                    return editedFields
+                return data
+            }),
+        }));
 
     }
 
     if (editCard == null) return null;
+
+    function setTitleField() {
+        const newEditedFields = { ...editedFields };
+        newEditedFields.title = document.getElementById(modalId + "title").value;
+        setEditedFields(newEditedFields);
+    }
+
+    function setDescriptionField() {
+        const newEditedFields = { ...editedFields };
+        newEditedFields.description = document.getElementById(modalId + "description").value;
+        setEditedFields(newEditedFields);
+    }
+
+    function setValue() {
+        const newEditedFields = { ...editedFields };
+        newEditedFields.value = document.getElementById(modalId + "value").value;
+        setEditedFields(newEditedFields);
+    }
 
     return (
         <Modal id={modalId}>
@@ -77,31 +89,19 @@ export default function EditModal({ editCard, setCards, cards }) {
                 {/* Title */}
                 <div className="grid grid-cols-2 py-2">
                     <label className="col-span-1" htmlFor={modalId + "title"}>Title: </label>
-                    <input type="text" className="input input-bordered input-sm w-full max-w-xs" onBlur={() => {
-                        const newEditedFields = { ...editedFields };
-                        newEditedFields.title = document.getElementById(modalId + "title").value;
-                        setEditedFields(newEditedFields);
-                    }} name={modalId + "title"} id={modalId + "title"} ref={title} />
+                    <input type="text" className="input input-bordered input-sm w-full max-w-xs" onBlur={setTitleField} name={modalId + "title"} id={modalId + "title"} ref={title} />
                 </div>
 
                 {/* Description */}
                 <div className="grid grid-cols-2 py-2">
                     <label className="col-span-1" htmlFor={modalId + "description"}>Description: </label>
-                    <input type="text" className="input input-bordered input-sm w-full max-w-xs" onBlur={() => {
-                        const newEditedFields = { ...editedFields };
-                        newEditedFields.description = document.getElementById(modalId + "description").value;
-                        setEditedFields(newEditedFields);
-                    }} name={modalId + "description"} id={modalId + "description"} defaultValue={editCard.description} ref={description} />
+                    <input type="text" className="input input-bordered input-sm w-full max-w-xs" onBlur={setDescriptionField} name={modalId + "description"} id={modalId + "description"} defaultValue={editCard.description} ref={description} />
                 </div>
 
                 {/* Value */}
                 <div className="grid grid-cols-2 py-2">
                     <label className="col-span-1" htmlFor={modalId + "value"}>Value: </label>
-                    <input type="text" className="input input-bordered input-sm w-full max-w-xs" onBlur={() => {
-                        const newEditedFields = { ...editedFields };
-                        newEditedFields.value = document.getElementById(modalId + "value").value;
-                        setEditedFields(newEditedFields);
-                    }} name={modalId + "value"} id={modalId + "value"} defaultValue={editCard.value} ref={value} />
+                    <input type="text" className="input input-bordered input-sm w-full max-w-xs" onBlur={setValue} name={modalId + "value"} id={modalId + "value"} defaultValue={editCard.value} ref={value} />
                 </div>
 
             </form>
