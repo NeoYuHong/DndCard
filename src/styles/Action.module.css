@@ -1,7 +1,7 @@
 .Action {
     display: flex;
     width: 12px;
-    padding: 15px;
+    padding: 10px 15px;
     align-items: center;
     justify-content: center;
     flex: 0 0 auto;

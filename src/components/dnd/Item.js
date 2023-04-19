@@ -104,7 +104,7 @@ export const Item = memo(
                             handle && styles.withHandle,
                             dragOverlay && styles.dragOverlay,
                             disabled && styles.disabled,
-                            color && styles.color
+                            color && styles.color + ' p-2 px-3 ms:p-4 ms:px-5 w-full grid grid-cols-12'
                         )}
                         style={style}
                         data-cypress="draggable-item"
@@ -113,35 +113,36 @@ export const Item = memo(
                         tabIndex={!handle ? 0 : undefined}
                     >
 
-                        <div className="col-span-10">
-                            <div>
+                        <div className='ms:text-base text-[10px] w-full col-span-12 xxs:col-span-10'>
 
-                                <p>
-                                    <span className="font-bold">Title</span>: {data.title}
-                                </p>
+                            <p>
+                                <span className="font-bold">Title</span>: {data.title}
+                            </p>
 
-                                <p>
-                                    <span className="font-bold">Description</span>: {data.description}
-                                </p>
+                            <p style={{
 
-                                <p>
-                                    <span className="font-bold">Value</span>: {data.value * data.multiplier}
-                                </p>
-                            </div>
+                            }}>
+                                <span className="font-bold">Description</span>: {data.description}
+                            </p>
+
+                            <p>
+                                <span className="font-bold">Value</span>: {data.value * data.multiplier}
+                            </p>
 
                         </div>
+
                         {/* {data.title} {data.id} {data.invis ? 'invis' : 'not'} */}
 
-                        <span className={styles.Actions}>
+                        <div className={styles.Actions + ' col-span-12 xxs:col-span-2'}>
                             {!active && !data.isTemplate && <Edit className={styles.Remove} onMouseDown={onEdit} />}
                             {!data.isTemplate && onRemove ? (
                                 <Remove className={styles.Remove} onMouseDown={onRemove} />
                             ) : null}
                             {handle ? <Handle {...handleProps} {...listeners} /> : null}
-                        </span>
+                        </div>
 
                     </div>
-                </li>
+                </li >
             );
         }
     )

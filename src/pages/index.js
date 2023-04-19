@@ -8,29 +8,22 @@ export default function Index() {
 
   const Container = ({ children }) => {
     return (
-      <div className="p-10 flex h-full flex-col gap-9">
+      <div className="p-10 flex flex-col h-full gap-9">
         {children}
       </div>
     )
   }
 
   return (
-    <>
 
-      <Container>
+    <Container>
 
-        <MultipleContainers
-          containerStyle={{ flex: 1 }}
-          scrollable={true}
-          itemCount={0}
-        />
+      <MultipleContainers
+        containerStyle={{ marginBottom: '2.5rem' }}
+        scrollable={true}
+        itemCount={10}
+      />
 
-      </Container>
-
-      {/* <AddModal editCard={editCard} setCards={setCards} cards={cards} />
-            <EditModal editCard={editCard} setCards={setCards} cards={cards} />
-            <DeleteModal editCard={editCard} setCards={setCards} cards={cards} />
-            <PreviewModal cards={cards} /> */}
-    </>
+    </Container>
   );
 };

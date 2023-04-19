@@ -43,10 +43,10 @@
 }
 .Item {
     position: relative;
-    display: flex;
+    /* display: flex; */
     flex-grow: 1;
     align-items: center;
-    padding: 18px 20px;
+    /* padding: 18px 20px; */
     background-color: #fff;
     box-shadow: 0 0 0 calc(1px / var(--scale-x, 1)) rgba(63, 63, 68, 0.05),
         0 1px calc(3px / var(--scale-x, 1)) 0 rgba(34, 33, 81, 0.15);
@@ -62,6 +62,11 @@
     white-space: nowrap;
     transform: scale(var(--scale, 1));
     transition: box-shadow 200ms cubic-bezier(0.18, 0.67, 0.6, 1.22);
+}
+.Item div p {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
 .Item:focus-visible {
     box-shadow: 0 0px 4px 1px #4c9ffe,
@@ -127,10 +132,12 @@
     visibility: hidden;
 }
 .Actions {
+    justify-self: end;
+
     display: flex;
-    align-self: flex-start;
+    /* align-self: flex-start;
     margin-top: -12px;
     margin-left: auto;
     margin-bottom: -15px;
-    margin-right: -10px;
+    margin-right: -15px; */
 }

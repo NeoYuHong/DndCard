@@ -231,26 +231,38 @@ export function MultipleContainers({
             <DeleteModal editCard={editCard} setItems={setItems} items={items} />
             <EditModal editCard={editCard} setItems={setItems} items={items} />
             <AddModal editCard={editCard} setItems={setItems} items={items} />
-            <div className="col-span-12 bg-[#2a303c] rounded-xl p-6 grid grid-cols-12 gap-4 h-fit flex-3">
-
-                <div className="col-span-10">
-
+            {/* <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
+                <a class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
+                    dw
+                </a>
+                <div class="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
+                    <a class="mr-5">First Link</a>
+                    <a class="mr-5">Second Link</a>
+                    <a class="mr-5">Third Link</a>
+                    <a class="mr-5">Fourth Link</a>
                 </div>
+                <button class="inline-flex items-center bg-yellow-500 border-0 py-1 px-3 mt-4 md:mt-0">Click Me</button>
+            </div> */}
 
-                <div className="col-span-1">
-                    <label htmlFor="previewcard" className="btn w-full">View Table</label>
+            <div class="bg-[#2a303c] rounded-xl p-6 h-fit flex-wrap flex-col md:flex-row items-center">
+
+                <div class="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center sm:justify-end">
+                    <div className="mr-5">
+                        <label htmlFor="previewcard" className="btn w-full">View Table</label>
+                    </div>
+
+                    <div className="mr-5">
+                        <button className={`btn w-full`} disabled={items.length < 1} onClick={() => {
+
+                            // const parsed = cards.map(({ title, description, value }, index) => ({ title, description, value, SN: index + 1 }));
+                            Utils.exportToExcel(Utils.parseCardData(items.Data))
+                        }}>Export</button>
+                    </div>
                 </div>
+            </div>
 
-                <div className="col-span-1">
-                    <button className={`btn float-right w-full`} disabled={items.length < 1} onClick={() => {
-
-                        // const parsed = cards.map(({ title, description, value }, index) => ({ title, description, value, SN: index + 1 }));
-                        Utils.exportToExcel(Utils.parseCardData(items.Data))
-                    }}>Export</button>
-                </div>
-
-            </div >
-            <div className="overflow-hidden flex-1">
+            {/* <div className="overflow-hidden flex-1"> */}
+            <div className="xl:pb-10">
                 <DndContext
                     sensors={sensors}
                     collisionDetection={collisionDetectionStrategy}
@@ -269,13 +281,13 @@ export function MultipleContainers({
                     <div
                         style={{
                             // display: 'inline-grid',
-                            display: 'flex',
+                            // display: 'flex',
                             // boxSizing: 'border-box',
                             // padding: 20,
-                            gridAutoFlow: vertical ? 'row' : 'column',
+                            // gridAutoFlow: vertical ? 'row' : 'column',
                             height: '100%',
-                            gap: 20,
                         }}
+                        className="gap-9 sm:columns-1 xl:columns-2"
                     >
                         <SortableContext
                             items={[...containers, PLACEHOLDER_ID]}
@@ -356,8 +368,8 @@ export function MultipleContainers({
                     {trashable && activeItem && !containers.includes(activeItem.id) ? (
                         <Trash id={TRASH_ID} />
                     ) : null}
-                </DndContext>
-            </div>
+                </DndContext >
+            </div >
 
         </>
     );
