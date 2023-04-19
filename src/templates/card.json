@@ -1,0 +1,29 @@
+[
+    {
+        "name": "Training Sessions Item",
+        "title": "Training Sessions",
+        "description": "Calculate training session cost",
+        "unit": "$",
+        "value": "0",
+        "multiplier": "1.75",
+        "color": "red"
+    },
+    {
+        "name": "Content Migration Item",
+        "title": "Content Migration",
+        "description": "Calculate the man power needed",
+        "unit": "Man Days",
+        "value": "0",
+        "multiplier": "1.75",
+        "color": "red"
+    },
+    {
+        "name": "Template 3",
+        "title": "Template 3",
+        "description": "This is description for template 3",
+        "unit": "$",
+        "value": "0",
+        "multiplier": "1.75",
+        "color": "red"
+    }
+]
