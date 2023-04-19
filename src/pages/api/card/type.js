@@ -1,13 +1,11 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
-import fs from 'fs';
+import card from '@/templates/card.json'
 
 export default function handler(req, res) {
 
     try {
-
-        const type = JSON.parse(fs.readFileSync(`./src/templates/card.json`).toString());
-        res.status(200).json({ message: type })
+        res.status(200).json({ message: card })
 
     } catch (error) {
 
