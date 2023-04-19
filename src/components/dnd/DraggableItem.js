@@ -67,44 +67,6 @@ export function DraggableItem({
                 onRemove={onRemove}
                 onEdit={onEdit}
             />
-            {/* {isDragging && data.isTemplate &&
-                <li
-                    className={classNames(
-                    )}
-                    style={
-                        {
-                            '--color': Utils.getColor(data.color),
-                        }
-                    }
-                >
-                    <div
-                        className={classNames(
-                            styles.Item,
-                            isDragging && styles.dragging,
-                            Utils.getColor(data.color) && styles.color
-                        )}
-                    >
-
-                        <div className="col-span-10">
-                            <div>
-
-                                <p>
-                                    <span className="font-bold">Title</span>: {data.title}
-                                </p>
-
-                                <p>
-                                    <span className="font-bold">Description</span>: {data.description}
-                                </p>
-
-                                <p>
-                                    <span className="font-bold">Value</span>: {data.value * data.multiplier}
-                                </p>
-                            </div>
-
-                        </div>
-
-                    </div>
-                </li>} */}
         </>
     );
 }
