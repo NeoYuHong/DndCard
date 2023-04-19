@@ -1,10 +1,11 @@
 import Modal from "@/components/modal/Modal";
 import { nanoid } from "nanoid";
 import { useRef } from "react";
+import ModalId from "./ModalId";
 
 export default function AddModal({ setItems, items, editCard }) {
 
-    const modalId = "addcard";
+    const modalId = ModalId.addcard;
 
     const valueInput = useRef(null)
 
@@ -95,7 +96,7 @@ export default function AddModal({ setItems, items, editCard }) {
 
     const Modalbody = () => {
 
-        if (!editCard || !document.getElementById("addcard").checked) return;
+        if (!editCard || !document.getElementById(modalId).checked) return;
 
         const card = editCard.data.current;
 
