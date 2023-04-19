@@ -29,6 +29,9 @@ import AddModal from "../../components/modal/AddModal";
 import { multipleContainersCoordinateGetter } from "./multipleContainersCoordinateGetter";
 import PreviewModal from "../modal/PreviewModal";
 import { DraggableItem } from "./DraggableItem";
+import ModalId from "../modal/ModalId";
+import DeleteModal from "../modal/DeleteModal";
+import EditModal from "../modal/EditModal";
 
 const PLACEHOLDER_ID = 'placeholder';
 
@@ -225,6 +228,8 @@ export function MultipleContainers({
     return (
         <>
             <PreviewModal items={items} />
+            <DeleteModal editCard={editCard} setItems={setItems} items={items} />
+            <EditModal editCard={editCard} setItems={setItems} items={items} />
             <AddModal editCard={editCard} setItems={setItems} items={items} />
             <div className="col-span-12 bg-[#2a303c] rounded-xl p-6 grid grid-cols-12 gap-4 h-fit flex-3">
 
@@ -375,9 +380,7 @@ export function MultipleContainers({
 
         if (active.data.current.new && !active.data.current.invis) {
 
-            // open modal 
-            setEditCard(activeItem)
-            document.getElementById('addcard').checked = true;
+            handleAddCard();
 
             // Add without modal
             // setItems((items) => ({
@@ -663,17 +666,23 @@ export function MultipleContainers({
         );
     }
 
-    function handleRemove(containerID) {
-        setContainers((containers) =>
-            containers.filter((id) => id !== containerID)
-        );
+    function handleAddCard() {
+        setEditCard(activeItem)
+        document.getElementById(ModalId.addcard).checked = true;
+    }
+
+    function handleRemove(id) {
+        setEditCard({ id })
+        document.getElementById(ModalId.deletecard).checked = true;
     }
 
     function handleEdit(id) {
-        setItems((items) => ({
-            ...items,
-            Data: items['Data'].filter((data) => data.id !== id),
-        }));
+        setEditCard({ id })
+        document.getElementById(ModalId.editcard).checked = true;
+        // setItems((items) => ({
+        //     ...items,
+        //     Data: items['Data'].filter((data) => data.id !== id),
+        // }));
     }
 
     function getNextContainerId() {

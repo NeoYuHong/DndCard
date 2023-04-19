@@ -1,12 +1,15 @@
 import Modal from "./Modal";
+import ModalId from "./ModalId";
 
-export default function DeleteModal({ editCard, setCards, cards }) {
+export default function DeleteModal({ editCard, setItems, items }) {
 
-    const modalId = "deletecard";
+    const modalId = ModalId.deletecard;
 
     const deleteCard = () => {
-        const updatedCard = cards.filter((card) => card.id !== editCard.id);
-        setCards(updatedCard);
+        setItems((items) => ({
+            ...items,
+            Data: items['Data'].filter((data) => data.id !== editCard.id),
+        }));
     }
 
     if (editCard == null) return null;

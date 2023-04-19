@@ -133,11 +133,11 @@ export const Item = memo(
                         {/* {data.title} {data.id} {data.invis ? 'invis' : 'not'} */}
 
                         <span className={styles.Actions}>
+                            {!active && !data.isTemplate && <Edit className={styles.Remove} onMouseDown={onEdit} />}
                             {!data.isTemplate && onRemove ? (
-                                <Remove className={styles.Remove} onClick={onRemove} />
+                                <Remove className={styles.Remove} onMouseDown={onRemove} />
                             ) : null}
                             {handle ? <Handle {...handleProps} {...listeners} /> : null}
-                            {!active && !data.isTemplate && <Edit className={styles.Remove} onMouseDown={onEdit} />}
                         </span>
 
                     </div>
