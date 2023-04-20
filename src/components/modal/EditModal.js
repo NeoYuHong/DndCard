@@ -100,7 +100,7 @@ export default function EditModal({ editCard, setItems, items }) {
 
                 {/* Value */}
                 <div className="grid grid-cols-2 py-2">
-                    <label className="col-span-1" htmlFor={modalId + "value"}>Value: </label>
+                    <label className="col-span-1" htmlFor={modalId + "value"}>Value {editCard.preUnit && `(${editCard.preUnit})`}:</label>
                     <input type="text" className="input input-bordered input-sm w-full max-w-xs" onBlur={setValue} name={modalId + "value"} id={modalId + "value"} defaultValue={editCard.value} ref={value} />
                 </div>
 

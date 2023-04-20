@@ -1,9 +1,9 @@
 import { Utils } from "@/helpers/utils";
-import { useDraggable } from "@dnd-kit/core";
+import { useSortable } from "@dnd-kit/sortable";
 import { useEffect, useState } from "react";
-import Item from "@/components/dnd/Item";
+import Item from "@/components/dndItem/Item";
 
-export default function DraggableItem({
+export default function SortableItem({
     disabled,
     id,
     data,
@@ -27,10 +27,10 @@ export default function DraggableItem({
         overIndex,
         transform,
         transition,
-    } = useDraggable({
+    } = useSortable({
         id,
         data
-    })
+    });
 
     const mounted = useMountStatus();
     const mountedWhileDragging = isDragging && !mounted;

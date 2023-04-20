@@ -84,7 +84,7 @@ export default function AddModal({ setItems, editCard }) {
                 {/* Form */}
                 <div>
                     <div className="grid grid-cols-2 py-2">
-                        <label className="col-span-1" htmlFor={"value"}>Value: {card.unit && `(${card.unit})`}</label>
+                        <label className="col-span-1" htmlFor={"value"}>Value {card.preUnit && `(${card.preUnit})`}:</label>
                         <input type="number" className="input input-bordered input-sm w-full max-w-xs" defaultValue={card.value} ref={valueInput} />
                     </div>
                 </div>

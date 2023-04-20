@@ -11,10 +11,12 @@ export class Utils {
 
     static async genTemplate() {
         try {
-            const output = card.map((item) => {
-                item.id = nanoid(11)
-                return item;
-            })
+            const output = card
+                .filter((item) => !item.disabled)
+                .map((item) => {
+                    item.id = nanoid(11)
+                    return item;
+                })
 
             return output;
         } catch (error) {
@@ -63,6 +65,14 @@ export class Utils {
         });
     }
 
+    static genColor() {
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += Math.floor(Math.random() * 10);
+        }
+        return color;
+    }
+
     static getColor(color) {
         switch (String(color).toUpperCase()) {
             case 'A':
@@ -73,6 +83,8 @@ export class Utils {
                 return '#00bcd4';
             case 'RED':
                 return '#ef769f';
+            default:
+                return color;
         }
 
         return undefined;

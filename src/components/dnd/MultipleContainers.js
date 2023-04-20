@@ -20,10 +20,10 @@ import { createPortal } from 'react-dom';
 import { Utils } from '@/helpers/utils';
 
 import DroppableContainer from "@/components/dnd/DroppableContainer";
-import Item from "@/components/dnd/Item";
+import Item from "@/components/dndItem/Item";
 import Container from "@/components/dnd/Container";
-import SortableItem from "@/components/dnd/SortableItem";
-import DraggableItem from "@/components/dnd/DraggableItem";
+import SortableItem from "@/components/dndItem/SortableItem";
+import DraggableItem from "@/components/dndTemplateItem/DraggableItem";
 
 import PreviewModal from "@/components/modal/PreviewModal";
 import AddModal from "@/components/modal/AddModal";

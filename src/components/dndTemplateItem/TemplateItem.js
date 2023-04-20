@@ -6,7 +6,7 @@ import { forwardRef, memo, useEffect } from 'react';
 import classNames from 'classnames';
 import { useDndContext } from '@dnd-kit/core';
 
-const Item = memo(
+const TemplateItem = memo(
     forwardRef(
         (
             {
@@ -99,12 +99,12 @@ const Item = memo(
                 >
                     <div
                         className={classNames(
-                            styles.Item,
+                            styles.Item + ' p-2 px-3 ms:p-4 ms:px-5 w-full grid grid-cols-12 ',
                             dragging && styles.dragging,
                             handle && styles.withHandle,
                             dragOverlay && styles.dragOverlay,
                             disabled && styles.disabled,
-                            color && styles.color + ' p-2 px-3 ms:p-4 ms:px-5 w-full grid grid-cols-12'
+                            // color && styles.color
                         )}
                         style={style}
                         data-cypress="draggable-item"
@@ -125,13 +125,11 @@ const Item = memo(
                                 <span className="font-bold">Description</span>: {data.description}
                             </p>
 
-                            <p>
+                            {/* <p>
                                 <span className="font-bold">Value</span>: {data.value * data.multiplier}
-                            </p>
+                            </p> */}
 
                         </div>
-
-                        {/* {data.title} {data.id} {data.invis ? 'invis' : 'not'} */}
 
                         <div className={styles.Actions + ' col-span-12 xxs:col-span-2'}>
                             {!active && !data.isTemplate && <Edit className={styles.Remove} onMouseDown={onEdit} />}
@@ -148,4 +146,4 @@ const Item = memo(
     )
 );
 
-export default Item;
+export default TemplateItem;
