@@ -1,12 +1,12 @@
 import styles from '@/styles/Item.module.css';
-import { Remove } from './Remove';
-import { Handle } from './Handle';
+import { Handle } from '@/components/dndButton/Handle';
+import { Remove } from '@/components/dndButton/Remove';
+import { Edit } from '@/components/dndButton/Edit';
 import { forwardRef, memo, useEffect } from 'react';
 import classNames from 'classnames';
-import { Edit } from './Edit';
 import { useDndContext } from '@dnd-kit/core';
 
-export const Item = memo(
+const Item = memo(
     forwardRef(
         (
             {
@@ -147,3 +147,5 @@ export const Item = memo(
         }
     )
 );
+
+export default Item;

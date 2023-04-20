@@ -1,8 +1,3 @@
-import { DroppableContainer } from "./DroppableContainer";
-import { Item } from "./Item";
-import { Container } from "./Container";
-import { SortableItem } from "./SortableItem";
-
 import {
     closestCenter,
     pointerWithin,
@@ -13,27 +8,30 @@ import {
     KeyboardSensor,
     MouseSensor,
     TouchSensor,
-    useDroppable,
     useSensors,
     useSensor,
     MeasuringStrategy,
-    closestCorners,
     defaultDropAnimationSideEffects,
 } from '@dnd-kit/core';
 
-import { arrayMove, SortableContext, horizontalListSortingStrategy, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { arrayMove, horizontalListSortingStrategy, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { createPortal, unstable_batchedUpdates } from 'react-dom';
+import { createPortal } from 'react-dom';
 import { Utils } from '@/helpers/utils';
-import AddModal from "../../components/modal/AddModal";
-import { multipleContainersCoordinateGetter } from "./multipleContainersCoordinateGetter";
-import PreviewModal from "../modal/PreviewModal";
-import { DraggableItem } from "./DraggableItem";
-import ModalId from "../modal/ModalId";
-import DeleteModal from "../modal/DeleteModal";
-import EditModal from "../modal/EditModal";
 
-const PLACEHOLDER_ID = 'placeholder';
+import DroppableContainer from "@/components/dnd/DroppableContainer";
+import Item from "@/components/dnd/Item";
+import Container from "@/components/dnd/Container";
+import SortableItem from "@/components/dnd/SortableItem";
+import DraggableItem from "@/components/dnd/DraggableItem";
+
+import PreviewModal from "@/components/modal/PreviewModal";
+import AddModal from "@/components/modal/AddModal";
+import ModalId from "@/components/modal/ModalId";
+import DeleteModal from "@/components/modal/DeleteModal";
+import EditModal from "@/components/modal/EditModal";
+
+import Header from "@/components/Header";
 
 const dropAnimation = {
     sideEffects: defaultDropAnimationSideEffects({
@@ -52,16 +50,14 @@ export function MultipleContainers({
     columns,
     handle = false,
     containerStyle,
-    coordinateGetter = multipleContainersCoordinateGetter,
+    coordinateGetter = Utils.multipleContainersCoordinateGetter,
     getItemStyles = () => ({}),
     wrapperStyle = () => ({}),
     minimal = false,
     modifiers,
     renderItem,
-    strategy = verticalListSortingStrategy,
-    trashable = false,
-    vertical = false,
     scrollable,
+    vertical = false
 }) {
     const [items, setItems] = useState(
         () => ({
@@ -74,33 +70,31 @@ export function MultipleContainers({
     );
 
     useEffect(() => {
-        const _a = async () => {
+
+        // Load data
+        (async () => {
             const template = await Utils.genTemplate()
             const data = await Utils.genData(itemCount)
             const newItems = { ...items, Template: template, Data: data }
             setItems(newItems)
-        }
-        _a();
-        // Utils.genTemplate().then((Template) => {
-        //     const newItems = { ...items, Template, }
-        //     // items.Template = template;
-        // })
+        })()
+
     }, [])
 
-    const [containers, setContainers] = useState(
-        Object.keys(items)
-    );
+    const [containers, setContainers] = useState(Object.keys(items));
     const [activeItem, setActiveItem] = useState(null);
     const lastOverId = useRef(null);
     const recentlyMovedToNewContainer = useRef(false);
     const isSortingContainer = activeItem ? containers.includes(activeItem.id) : false;
     const [editCard, setEditCard] = useState(null);
-
-    useEffect(() => {
-        console.info(items)
-    }, [items])
-
-    const TRASH_ID = 'void';
+    const [clonedItems, setClonedItems] = useState(null);
+    const sensors = useSensors(
+        useSensor(MouseSensor),
+        useSensor(TouchSensor),
+        useSensor(KeyboardSensor, {
+            coordinateGetter,
+        })
+    );
 
     /**
      * Custom collision detection strategy optimized for multiple containers
@@ -130,16 +124,10 @@ export function MultipleContainers({
                     : rectIntersection(args);
             let overId = getFirstCollision(intersections, 'id');
 
-            // if (overId == null) {
-            //     return []
-            // }
+            if (overId == null)
+                return null;
 
             if (overId != null) {
-                if (overId === TRASH_ID) {
-                    // If the intersecting droppable is the trash, return early
-                    // Remove this if you're not using trashable functionality in your app
-                    return intersections;
-                }
 
                 if (overId in items) {
                     const containerItems = items[overId];
@@ -152,7 +140,6 @@ export function MultipleContainers({
                             droppableContainers: args.droppableContainers.filter(
                                 (container) => container.id !== overId &&
                                     containerItems.some(item => item.id === container.id)
-                                // containerItems.includes(container.id)
                             ),
                         })[0]?.id;
 
@@ -177,21 +164,13 @@ export function MultipleContainers({
         },
         [activeItem, items]
     );
-    const [clonedItems, setClonedItems] = useState(null);
-    const sensors = useSensors(
-        useSensor(MouseSensor),
-        useSensor(TouchSensor),
-        useSensor(KeyboardSensor, {
-            coordinateGetter,
-        })
-    );
+
     const findContainer = (id) => {
 
         if (id in items) {
             return id;
         }
 
-        // return Object.keys(items).find((key) => items[key].includes(id));
         return Object.keys(items).find((key) => items[key].some(item => item.id === id));
     };
 
@@ -230,39 +209,11 @@ export function MultipleContainers({
             <PreviewModal items={items} />
             <DeleteModal editCard={editCard} setItems={setItems} items={items} />
             <EditModal editCard={editCard} setItems={setItems} items={items} />
-            <AddModal editCard={editCard} setItems={setItems} items={items} />
-            {/* <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
-                <a class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
-                    dw
-                </a>
-                <div class="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
-                    <a class="mr-5">First Link</a>
-                    <a class="mr-5">Second Link</a>
-                    <a class="mr-5">Third Link</a>
-                    <a class="mr-5">Fourth Link</a>
-                </div>
-                <button class="inline-flex items-center bg-yellow-500 border-0 py-1 px-3 mt-4 md:mt-0">Click Me</button>
-            </div> */}
+            <AddModal editCard={editCard} setItems={setItems} />
 
-            <div class="bg-[#2a303c] rounded-xl p-6 h-fit flex-wrap flex-col md:flex-row items-center">
+            <Header items={items} />
 
-                <div class="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center sm:justify-end">
-                    <div className="mr-5">
-                        <label htmlFor="previewcard" className="btn w-full">View Table</label>
-                    </div>
-
-                    <div className="mr-5">
-                        <button className={`btn w-full`} disabled={items.length < 1} onClick={() => {
-
-                            // const parsed = cards.map(({ title, description, value }, index) => ({ title, description, value, SN: index + 1 }));
-                            Utils.exportToExcel(Utils.parseCardData(items.Data))
-                        }}>Export</button>
-                    </div>
-                </div>
-            </div>
-
-            {/* <div className="overflow-hidden flex-1"> */}
-            <div className="xl:pb-10">
+            <div>
                 <DndContext
                     sensors={sensors}
                     collisionDetection={collisionDetectionStrategy}
@@ -278,19 +229,9 @@ export function MultipleContainers({
                     onDragCancel={onDragCancel}
                     modifiers={modifiers}
                 >
-                    <div
-                        style={{
-                            // display: 'inline-grid',
-                            // display: 'flex',
-                            // boxSizing: 'border-box',
-                            // padding: 20,
-                            // gridAutoFlow: vertical ? 'row' : 'column',
-                            height: '100%',
-                        }}
-                        className="gap-9 sm:columns-1 xl:columns-2"
-                    >
+                    <div className="gap-9 sm:columns-1 xl:columns-2 h-full">
                         <SortableContext
-                            items={[...containers, PLACEHOLDER_ID]}
+                            items={[...containers]}
                             strategy={
                                 vertical
                                     ? verticalListSortingStrategy
@@ -307,9 +248,8 @@ export function MultipleContainers({
                                     scrollable={scrollable}
                                     style={containerStyle}
                                     unstyled={minimal}
-                                // onRemove={() => handleRemove(containerId)}
                                 >
-                                    <SortableContext items={items[containerId]} strategy={strategy}>
+                                    <SortableContext items={items[containerId]} strategy={verticalListSortingStrategy}>
                                         {items[containerId].map((data, index) => {
                                             if (containerId === 'Template') {
                                                 data.isTemplate = true;
@@ -331,6 +271,7 @@ export function MultipleContainers({
                                                     />
                                                 );
                                             }
+
                                             return (
                                                 <SortableItem
                                                     disabled={isSortingContainer}
@@ -365,43 +306,30 @@ export function MultipleContainers({
                         </DragOverlay>,
                         document.body
                     )}
-                    {trashable && activeItem && !containers.includes(activeItem.id) ? (
-                        <Trash id={TRASH_ID} />
-                    ) : null}
                 </DndContext >
-            </div >
+
+            </div>
 
         </>
     );
 
-    function onDragStart({ active, over }) {
+    function onDragStart({ active }) {
         setActiveItem(active);
         setClonedItems(items);
     }
 
     function onDragEnd({ active, over }) {
 
-        // const _item = items.Data.find((data) => data.id === active.id);
-        // if (_item.invis && _item.new) {
+        // if item was dropped outside of container
         if (active.data.current.invis && active.data.current.new) {
             setItems((items) => ({
                 ...items,
-                Data: items['Data'].filter((data) => data.id !== active.id),
+                Data: items['Data'].filter((item) => item.id !== active.id),
             }));
         }
 
         if (active.data.current.new && !active.data.current.invis) {
-
             handleAddCard();
-
-            // Add without modal
-            // setItems((items) => ({
-            //     ...items,
-            //     Data: items['Data'].map((data) => {
-            //         delete data.new;
-            //         return data;
-            //     }),
-            // }));
         }
 
         if (active.id in items && over?.id) {
@@ -428,45 +356,14 @@ export function MultipleContainers({
             return;
         }
 
-        if (overId === TRASH_ID) {
-            setItems((items) => ({
-                ...items,
-                [activeContainer]: items[activeContainer].filter(
-                    (data) => data.id !== activeItem.id
-                ),
-            }));
-            setActiveItem(null);
-            return;
-        }
-
-        if (overId === PLACEHOLDER_ID) {
-            const newContainerId = getNextContainerId();
-
-            unstable_batchedUpdates(() => {
-                setContainers((containers) => [...containers, newContainerId]);
-                setItems((items) => ({
-                    ...items,
-                    [activeContainer]: items[activeContainer].filter(
-                        (data) => data.id !== activeItem.id
-                    ),
-                    [newContainerId]: [active.id],
-                }));
-                setActiveItem(null);
-            });
-            return;
-        }
-
         const overContainer = findContainer(overId);
 
-        // Template block
         if (overContainer === 'Template') {
             setActiveItem(null);
             return;
         }
 
         if (overContainer) {
-            // const activeIndex = items[activeContainer].indexOf(active.id);
-            // const overIndex = items[overContainer].indexOf(overId);
             const overIndex = items[overContainer].findIndex(item => item.id === overId);
             const activeIndex = items[activeContainer].findIndex(item => item.id === active.id);
 
@@ -489,25 +386,22 @@ export function MultipleContainers({
 
         const overId = over?.id;
 
-        // || over?.id == 'Data'
+        // if item was dropped outside of container
         if ((over == null || items.length == 1) && active && active.data.current.new) {
-            return setItems((items) => {
-                return {
-                    ...items,
-                    Data: items.Data.map(
-                        (item) => {
-                            const tempItem = { ...item };
-                            if (item.id == activeItem.id) {
-                                tempItem.invis = true;
-                            }
-                            return tempItem;
-                        }
-                    ),
-                };
-            });
+            return setItems((items) => ({
+                ...items,
+                Data: items.Data.map(
+                    (item) => {
+                        const tempItem = { ...item };
+                        if (item.id == activeItem.id)
+                            tempItem.invis = true;
+                        return tempItem;
+                    }
+                )
+            }));
         }
 
-        if (overId == null || overId === TRASH_ID || active.id in items) {
+        if (overId == null || active.id in items) {
             return;
         }
 
@@ -531,11 +425,13 @@ export function MultipleContainers({
                     })
                 })
             });
+
         }
 
         if (activeContainer !== overContainer) {
 
             setItems((items) => {
+
                 const activeItems = items[activeContainer];
                 const overItems = items[overContainer];
                 let overIndex = overItems.findIndex(item => item.id === overId);
@@ -559,7 +455,6 @@ export function MultipleContainers({
 
                 recentlyMovedToNewContainer.current = true;
 
-                // Template block
                 if (overContainer == 'Template')
                     return items;
 
@@ -609,6 +504,7 @@ export function MultipleContainers({
                         ),
                     ],
                 };
+
             });
         };
     }
@@ -646,11 +542,9 @@ export function MultipleContainers({
 
         return (
             <Container
-                label={`Column ${activeContainer.id}`}
+                label={`${activeContainer.id}`}
                 columns={columns}
-                style={{
-                    height: '100%',
-                }}
+                style={{ height: '100%' }}
                 shadow
                 unstyled={false}
             >
@@ -691,10 +585,6 @@ export function MultipleContainers({
     function handleEdit(item) {
         setEditCard(item)
         document.getElementById(ModalId.editcard).checked = true;
-        // setItems((items) => ({
-        //     ...items,
-        //     Data: items['Data'].filter((data) => data.id !== id),
-        // }));
     }
 
     function getNextContainerId() {
@@ -704,34 +594,4 @@ export function MultipleContainers({
         return String.fromCharCode(lastContainerId.charCodeAt(0) + 1);
     }
 
-    function Trash({ id }) {
-        const { setNodeRef, isOver } = useDroppable({
-            id,
-        });
-
-        return (
-            <div
-                ref={setNodeRef}
-                style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    position: 'fixed',
-                    left: '50%',
-                    marginLeft: -150,
-                    bottom: 20,
-                    width: 300,
-                    height: 60,
-                    borderRadius: 5,
-                    border: '1px solid',
-                    borderColor: isOver ? 'red' : '#DDD',
-                }}
-            >
-                Drop here to delete
-            </div>
-        );
-    }
-
 }
-
-

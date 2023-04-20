@@ -7,6 +7,7 @@ export default function Modal({ id, children, className, closeElement }) {
                 <div className={`modal-box relative ${className}`}>
 
                     {closeElement}
+
                     {!closeElement && <label htmlFor={id} className="hover:cursor-pointer absolute right-6 top-4">✕</label>}
 
                     {children}

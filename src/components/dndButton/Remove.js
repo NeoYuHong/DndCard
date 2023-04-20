@@ -1,5 +1,4 @@
-import container from '@/styles/Action.module.css';
-import { Action } from './Action';
+import { Action } from '@/components/dndButton/Action';
 
 export function Remove(props) {
     return (

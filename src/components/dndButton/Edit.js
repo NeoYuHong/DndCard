@@ -1,4 +1,4 @@
-import { Action } from './Action';
+import { Action } from '@/components/dndButton/Action';
 
 export function Edit(props) {
     return (

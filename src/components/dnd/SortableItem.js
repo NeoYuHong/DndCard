@@ -1,11 +1,9 @@
 import { Utils } from "@/helpers/utils";
-import { useDraggable } from "@dnd-kit/core";
 import { useSortable } from "@dnd-kit/sortable";
 import { useEffect, useState } from "react";
+import Item from "@/components/dnd/Item";
 
-const { Item } = require("./Item");
-
-export function SortableItem({
+export default function SortableItem({
     disabled,
     id,
     data,

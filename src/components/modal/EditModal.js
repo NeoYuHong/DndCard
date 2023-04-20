@@ -18,6 +18,8 @@ export default function EditModal({ editCard, setItems, items }) {
 
         if (editCard == null) return;
 
+        document.getElementById(`${modalId}invalid`).classList.add("hidden");
+
         // Update fields
         title.current.value = editCard.title;
         description.current.value = editCard.description;
@@ -39,8 +41,6 @@ export default function EditModal({ editCard, setItems, items }) {
 
         // Hide invalid alert
         document.getElementById(`${modalId}invalid`).classList.add("hidden");
-
-        if (value.current.value == 0) return;
 
         // Close modal
         document.getElementById(modalId).checked = false;

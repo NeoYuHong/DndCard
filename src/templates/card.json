@@ -6,7 +6,8 @@
         "unit": "$",
         "value": "0",
         "multiplier": "1.75",
-        "color": "red"
+        "color": "red",
+        "prompt": "Enter the number of training sessions"
     },
     {
         "name": "Content Migration Item",
@@ -14,8 +15,9 @@
         "description": "Calculate the man power needed",
         "unit": "Man Days",
         "value": "0",
-        "multiplier": "1.75",
-        "color": "red"
+        "multiplier": "1.5",
+        "color": "red",
+        "prompt": "Enter the number of page to be migrated"
     },
     {
         "name": "Template 3",
@@ -23,7 +25,18 @@
         "description": "This is description for template 3",
         "unit": "$",
         "value": "0",
-        "multiplier": "1.75",
-        "color": "red"
+        "multiplier": "0.75",
+        "color": "red",
+        "prompt": "Enter a random number"
+    },
+    {
+        "name": "Template 4",
+        "title": "Template 3",
+        "description": "This is description for template 3",
+        "unit": "$",
+        "value": "0",
+        "multiplier": "1.85",
+        "color": "red",
+        "prompt": "Enter a random number"
     }
 ]

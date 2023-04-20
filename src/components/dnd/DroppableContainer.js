@@ -1,11 +1,11 @@
-const { Container } = require("./Container");
+import Container from '@/components/dnd/Container';
 import { defaultAnimateLayoutChanges, useSortable, } from "@dnd-kit/sortable";
 import { CSS } from '@dnd-kit/utilities';
 
 const animateLayoutChanges = (args) =>
     defaultAnimateLayoutChanges({ ...args, wasDragging: true });
 
-export function DroppableContainer({
+export default function DroppableContainer({
     children,
     columns = 1,
     disabled,

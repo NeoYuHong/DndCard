@@ -2,10 +2,10 @@
 import styles from '@/styles/Container.module.css';
 import classNames from 'classnames';
 import { forwardRef } from 'react';
-import { Handle } from './Handle';
-import { Remove } from './Remove';
+import { Handle } from '@/components/dndButton/Handle';
+import { Remove } from '@/components/dndButton/Remove';
 
-export const Container = forwardRef(
+const Container = forwardRef(
     (
         {
             children,
@@ -16,7 +16,6 @@ export const Container = forwardRef(
             onClick,
             onRemove,
             label,
-            placeholder,
             style,
             scrollable,
             shadow,
@@ -42,7 +41,6 @@ export const Container = forwardRef(
                     unstyled && styles.unstyled,
                     horizontal && styles.horizontal,
                     hover && styles.hover,
-                    placeholder && styles.placeholder,
                     scrollable && styles.scrollable,
                     shadow && styles.shadow
                 )}
@@ -58,10 +56,10 @@ export const Container = forwardRef(
                         </div>
                     </div>
                 ) : null}
-                {placeholder ? children :
-                    <ul className='h-full'>{children}</ul>
-                }
+                <ul className='h-full'>{children}</ul>
             </Component>
         );
     }
 );
+
+export default Container;

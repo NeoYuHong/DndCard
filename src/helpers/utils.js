@@ -2,8 +2,6 @@ import * as XLSX from "xlsx";
 import { nanoid } from "nanoid";
 import card from '@/templates/card.json'
 
-const frontend = process.env.REACT_APP_FRONTEND_URL
-
 const defaultInitializer = (index) => index;
 export class Utils {
 
@@ -13,14 +11,6 @@ export class Utils {
 
     static async genTemplate() {
         try {
-            // const res = await fetch(`/api/card/type`);
-            // const result = await res.json();
-
-            // gen unique id for each card
-            // const output = result.message.map((item) => {
-            //     item.id = nanoid(11)
-            //     return item;
-            // })
             const output = card.map((item) => {
                 item.id = nanoid(11)
                 return item;
@@ -88,5 +78,99 @@ export class Utils {
         return undefined;
     }
 
+    static multipleContainersCoordinateGetter = (
+        event,
+        { context: { active, droppableRects, droppableContainers, collisionRect } }
+    ) => {
+        if (directions.includes(event.code)) {
+            event.preventDefault();
+
+            if (!active || !collisionRect) {
+                return;
+            }
+
+            const filteredContainers = [];
+
+            droppableContainers.getEnabled().forEach((entry) => {
+                if (!entry || entry?.disabled) {
+                    return;
+                }
+
+                const rect = droppableRects.get(entry.id);
+
+                if (!rect) {
+                    return;
+                }
+
+                const data = entry.data.current;
+
+                if (data) {
+                    const { type, children } = data;
+
+                    if (type === 'container' && children?.length > 0) {
+                        if (active.data.current?.type !== 'container') {
+                            return;
+                        }
+                    }
+                }
+
+                switch (event.code) {
+                    case KeyboardCode.Down:
+                        if (collisionRect.top < rect.top) {
+                            filteredContainers.push(entry);
+                        }
+                        break;
+                    case KeyboardCode.Up:
+                        if (collisionRect.top > rect.top) {
+                            filteredContainers.push(entry);
+                        }
+                        break;
+                    case KeyboardCode.Left:
+                        if (collisionRect.left >= rect.left + rect.width) {
+                            filteredContainers.push(entry);
+                        }
+                        break;
+                    case KeyboardCode.Right:
+                        if (collisionRect.left + collisionRect.width <= rect.left) {
+                            filteredContainers.push(entry);
+                        }
+                        break;
+                }
+            });
+
+            const collisions = closestCorners({
+                active,
+                collisionRect: collisionRect,
+                droppableRects,
+                droppableContainers: filteredContainers,
+                pointerCoordinates: null,
+            });
+            const closestId = getFirstCollision(collisions, 'id');
+
+            if (closestId != null) {
+                const newDroppable = droppableContainers.get(closestId);
+                const newNode = newDroppable?.node.current;
+                const newRect = newDroppable?.rect.current;
+
+                if (newNode && newRect) {
+
+                    if (newDroppable.data.current?.type === 'container') {
+                        return {
+                            x: newRect.left + 20,
+                            y: newRect.top + 74,
+                        };
+                    }
+
+                    return {
+                        x: newRect.left,
+                        y: newRect.top,
+                    };
+
+                }
+            }
+        }
+
+        return undefined;
+    };
 
 }

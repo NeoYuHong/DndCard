@@ -1,0 +1,22 @@
+.Header {
+    @apply bg-[#2a303c] rounded-xl p-6 h-fit flex-wrap flex-col md:flex-row items-center;
+}
+
+.Header div {
+    @apply flex flex-wrap items-center text-base justify-center;
+}
+
+.Header div div {
+    @apply mr-5;
+}
+
+.Header div div * {
+    @apply btn w-full;
+}
+
+/* tailwind sm */
+@media (min-width: 640px) {
+    .Header div {
+        @apply justify-end;
+    }
+}

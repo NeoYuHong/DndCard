@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 import { forwardRef } from "react";
-import { Action } from "./Action";
+import { Action } from '@/components/dndButton/Action';
 
 export const Handle = forwardRef(
     (props, ref) => {

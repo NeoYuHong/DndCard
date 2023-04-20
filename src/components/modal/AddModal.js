@@ -3,13 +3,13 @@ import { nanoid } from "nanoid";
 import { useRef } from "react";
 import ModalId from "./ModalId";
 
-export default function AddModal({ setItems, items, editCard }) {
+export default function AddModal({ setItems, editCard }) {
 
     const modalId = ModalId.addcard;
 
     const valueInput = useRef(null)
 
-    const removeCard = (e) => {
+    function removeCard() {
 
         // Close modal
         document.getElementById(modalId).checked = false;
@@ -33,7 +33,7 @@ export default function AddModal({ setItems, items, editCard }) {
 
     }
 
-    const addCard = (e) => {
+    function addCard() {
 
         // Validation regex
         const isNumber = new RegExp(/^[0-9]+$/);
@@ -57,36 +57,11 @@ export default function AddModal({ setItems, items, editCard }) {
         // TODO: setItems affecting closing of modal, using timeout to "fix" it. Find better method 
         setTimeout(() => {
 
-
-            // return setItems((items) => ({
-            //     ...items,
-            //     Data: items['Data'].map((data) => {
-            //         if (data.new) {
-            //             const newData = { ...editCard.data.current }
-            //             delete newData.new;
-            //             console.log(newData)
-            //             return newData
-            //         }
-            //         return data;
-            //     }),
-            // }));
-
             return setItems((items) => ({
                 ...items,
                 Data: items['Data'].map((data) => {
                     delete data.new;
                     return data;
-                }),
-            }));
-
-            // delete
-            return setItems((items) => ({
-                ...items,
-                Data: items['Data'].filter((data) => {
-                    if (data.new) {
-                        return false
-                    }
-                    return true;
                 }),
             }));
 
@@ -104,12 +79,12 @@ export default function AddModal({ setItems, items, editCard }) {
             <form>
 
                 {/* Title */}
-                <h3 className="font-bold text-lg pb-2">Enter value for {card.title}</h3>
+                <h3 className="font-bold text-lg pb-2">{card.prompt ?? `Enter value for ${card.title}`}</h3>
 
                 {/* Form */}
                 <div>
                     <div className="grid grid-cols-2 py-2">
-                        <label className="col-span-1" htmlFor={"value"}>Value: </label>
+                        <label className="col-span-1" htmlFor={"value"}>Value: {card.unit && `(${card.unit})`}</label>
                         <input type="number" className="input input-bordered input-sm w-full max-w-xs" defaultValue={card.value} ref={valueInput} />
                     </div>
                 </div>
@@ -133,10 +108,14 @@ export default function AddModal({ setItems, items, editCard }) {
         )
     }
 
-    return (
-        <Modal id={modalId} closeElement={
+    const CustomCloseButton = () => {
+        return (
             <button type="button" htmlFor={modalId} className="hover:cursor-pointer absolute right-6 top-4" onClick={removeCard}>✕</button>
-        }>
+        )
+    }
+
+    return (
+        <Modal id={modalId} closeElement={<CustomCloseButton />}>
             <Modalbody />
         </Modal>
     )

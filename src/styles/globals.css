@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --main-bg-color: #242933;
+    --container-bg-color: #2a303c;
+}
+
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -12,21 +17,6 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type='number'] {
     -moz-appearance: textfield;
-}
-
-/* Scrollbar */
-::-webkit-scrollbar {
-    width: 8px;
-    height: fit-content;
-}
-
-::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
-}
-
-::-webkit-scrollbar-thumb {
-    background: #191d24;
-    border-radius: 50px;
 }
 
 * {
@@ -40,18 +30,13 @@ input[type='number'] {
 }
 
 html,
-body {
-    max-width: 100vw;
-    height: 100%;
-    overflow-x: hidden;
-    background-color: #242933;
-}
-
-html,
 body,
 body > div:first-child,
 div#__next,
 div#__next > div {
+    max-width: 100vw;
+    overflow-x: hidden;
+    background-color: #242933;
     height: 100%;
 }
 
