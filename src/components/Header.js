@@ -1,5 +1,5 @@
 import { Utils } from "@/helpers/utils";
-import styles from "@/Styles/Header.module.css";
+import styles from "@/styles/Header.module.css";
 
 export default function Header({ items }) {
 
