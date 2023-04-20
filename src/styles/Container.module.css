@@ -22,11 +22,11 @@
 
 .Container ul {
     list-style: none;
-    padding: 20px;
+    padding: 15px;
     margin: 0;
 }
 .Container ul li:not(:first-child) {
-    margin: 10px 0px 0px 0px;
+    margin: 15px 0px 0px 0px;
 }
 .Container.scrollable ul {
     overflow-y: auto;
