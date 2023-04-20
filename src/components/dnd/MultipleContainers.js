@@ -242,7 +242,7 @@ export function MultipleContainers({
                                 <DroppableContainer
                                     key={containerId}
                                     id={containerId}
-                                    label={minimal ? undefined : `${containerId} ${containerId === 'Data' ? `(${items.Data.length - 1})` : ''}`}
+                                    label={minimal ? undefined : `${containerId} ${containerId === 'Data' ? `(${items.Data.length})` : ''}`}
                                     columns={columns}
                                     items={items[containerId]}
                                     scrollable={scrollable}
