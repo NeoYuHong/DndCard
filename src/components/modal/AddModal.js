@@ -59,7 +59,7 @@ export default function AddModal({ setItems, editCard }) {
 
             return setItems((items) => ({
                 ...items,
-                Data: items['Data'].map((data) => {
+                Data: items['Data'].filter((data) => !(items['Data'].length > 0 && data.id == 'tempfix')).map((data) => {
                     delete data.new;
                     return data;
                 }),
