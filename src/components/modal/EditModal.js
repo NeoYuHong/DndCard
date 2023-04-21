@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import Modal from "./Modal";
 import ModalId from "./ModalId";
 
-export default function EditModal({ editCard, setItems, items }) {
+export default function EditModal({ editCard, setItems, items, setModifying }) {
 
     const modalId = ModalId.editcard;
 
@@ -43,6 +43,7 @@ export default function EditModal({ editCard, setItems, items }) {
         document.getElementById(`${modalId}invalid`).classList.add("hidden");
 
         // Close modal
+        setModifying(false);
         document.getElementById(modalId).checked = false;
 
         // Save changes
@@ -77,8 +78,17 @@ export default function EditModal({ editCard, setItems, items }) {
         setEditedFields(newEditedFields);
     }
 
+    const CustomCloseButton = () => {
+        return (
+            <button type="button" htmlFor={modalId} className="hover:cursor-pointer absolute right-6 top-4" onClick={() => {
+                setModifying(false)
+                document.getElementById(modalId).checked = false;
+            }}>✕</button>
+        )
+    }
+
     return (
-        <Modal id={modalId}>
+        <Modal id={modalId} closeElement={<CustomCloseButton />}>
 
             {/* Title */}
             <h3 className="font-bold text-lg pb-2">Editing {editCard.name}</h3>

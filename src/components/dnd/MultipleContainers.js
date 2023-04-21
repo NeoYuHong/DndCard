@@ -88,6 +88,7 @@ export function MultipleContainers({
     const isSortingContainer = activeItem ? containers.includes(activeItem.id) : false;
     const [editCard, setEditCard] = useState(null);
     const [clonedItems, setClonedItems] = useState(null);
+    const [isModifying, setModifying] = useState(false)
     const sensors = useSensors(
         useSensor(MouseSensor),
         useSensor(TouchSensor),
@@ -207,8 +208,8 @@ export function MultipleContainers({
     return (
         <>
             <PreviewModal items={items} />
-            <DeleteModal editCard={editCard} setItems={setItems} items={items} />
-            <EditModal editCard={editCard} setItems={setItems} items={items} />
+            <DeleteModal editCard={editCard} setItems={setItems} items={items} setModifying={setModifying} />
+            <EditModal editCard={editCard} setItems={setItems} items={items} setModifying={setModifying} />
             <AddModal editCard={editCard} setItems={setItems} />
 
             <Header items={items} />
@@ -242,7 +243,7 @@ export function MultipleContainers({
                                 <DroppableContainer
                                     key={containerId}
                                     id={containerId}
-                                    label={minimal ? undefined : `${containerId} ${containerId === 'Data' ? `(${items.Data.length})` : ''}`}
+                                    label={minimal ? undefined : `${containerId} ${containerId === 'Data' ? `(${items.Data.filter((data) => data.id != 'tempfix').length})` : ''}`}
                                     columns={columns}
                                     items={items[containerId]}
                                     scrollable={scrollable}
@@ -511,6 +512,9 @@ export function MultipleContainers({
 
     function renderSortableItemDragOverlay(active) {
 
+        if (isModifying)
+            return null
+
         const { id, } = active
 
         const data = { ...active.data.current }
@@ -579,11 +583,13 @@ export function MultipleContainers({
 
     function handleRemove(item) {
         setEditCard(item)
+        setModifying(true);
         document.getElementById(ModalId.deletecard).checked = true;
     }
 
     function handleEdit(item) {
         setEditCard(item)
+        setModifying(true);
         document.getElementById(ModalId.editcard).checked = true;
     }
 

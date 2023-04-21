@@ -1,7 +1,7 @@
 import Modal from "./Modal";
 import ModalId from "./ModalId";
 
-export default function DeleteModal({ editCard, setItems, items }) {
+export default function DeleteModal({ editCard, setItems, items, setModifying }) {
 
     const modalId = ModalId.deletecard;
 
@@ -10,6 +10,7 @@ export default function DeleteModal({ editCard, setItems, items }) {
             ...items,
             Data: items['Data'].filter((data) => data.id !== editCard.id),
         }));
+        setModifying(false);
         document.getElementById(modalId).checked = false;
     }
 
@@ -31,8 +32,17 @@ export default function DeleteModal({ editCard, setItems, items }) {
         )
     }
 
+    const CustomCloseButton = () => {
+        return (
+            <button type="button" htmlFor={modalId} className="hover:cursor-pointer absolute right-6 top-4" onClick={() => {
+                setModifying(false)
+                document.getElementById(modalId).checked = false;
+            }}>✕</button>
+        )
+    }
+
     return (
-        <Modal id={modalId} className="bg-red-800">
+        <Modal id={modalId} className="bg-red-800" closeElement={<CustomCloseButton />}>
             <ModalBody />
         </Modal>
     )

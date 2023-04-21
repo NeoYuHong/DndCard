@@ -5,6 +5,7 @@ import { Edit } from '@/components/dndButton/Edit';
 import { forwardRef, memo, useEffect } from 'react';
 import classNames from 'classnames';
 import { useDndContext } from '@dnd-kit/core';
+import ModalId from '../modal/ModalId';
 
 const Item = memo(
     forwardRef(
@@ -36,7 +37,6 @@ const Item = memo(
         ) => {
 
             const { active, } = useDndContext();
-
 
             useEffect(() => {
                 if (!dragOverlay) {
@@ -131,15 +131,20 @@ const Item = memo(
 
                         </div>
 
-                        <div className={styles.Actions + ' col-span-12 xxs:col-span-2'}>
-                            {!active && !data.isTemplate && <Edit className={styles.Remove} onMouseDown={onEdit} />}
+                        {!active && !dragOverlay && !data.isTemplate && <div className={styles.Actions + ` col-span-12 xxs:col-span-2 `}>
+
+                            {!data.isTemplate && <Edit className={styles.Remove} onMouseDown={onEdit} />}
+
                             {!data.isTemplate && onRemove ? (
                                 <Remove className={styles.Remove} onMouseDown={onRemove} />
                             ) : null}
+
                             {handle ? <Handle {...handleProps} {...listeners} /> : null}
-                        </div>
+
+                        </div>}
 
                     </div>
+
                 </li >
             );
         }
