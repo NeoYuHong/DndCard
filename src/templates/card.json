@@ -22,7 +22,7 @@
         "prompt": "Enter the number of page to be migrated"
     },
     {
-        "name": "Template 3",
+        "name": "Word length Test item",
         "title": "Template 3",
         "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
         "preUnit": "$",
@@ -30,19 +30,18 @@
         "value": "0",
         "multiplier": "0.75",
         "color": "#556B2F",
-        "prompt": "Enter a random number"
+        "prompt": "long prompt"
     },
     {
-        "disabled": true,
-        "name": "Template 4",
-        "title": "Template 4",
-        "description": "This is description for template 4",
-        "preUnit": "$",
-        "postUnit": "$",
-        "value": "0",
-        "multiplier": "1.85",
-        "color": "#006400",
-        "prompt": "Enter a random number"
+        "name": "",
+        "title": "empty template test",
+        "description": "",
+        "preUnit": "",
+        "postUnit": "",
+        "value": "",
+        "multiplier": "",
+        "color": "",
+        "prompt": ""
     },
     {
         "disabled": true,
