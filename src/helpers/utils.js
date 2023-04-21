@@ -43,14 +43,16 @@ export class Utils {
         return [...new Array(length)].map((_, index) => initializer(index));
     }
 
+    static tempfix = {
+        "id": 'tempfix',
+        "name": "temp fix",
+        "invis": true,
+    }
+
     static async genData(length) {
         // TODO: if length is 0, can't drag item in. Using this as a temp fix
         if (length == 0)
-            return [{
-                "id": 'tempfix',
-                "name": "temp fix",
-                "invis": true,
-            }]
+            return [this.tempfix]
         return [...new Array(length)].map((_, index) => {
             return {
                 "id": this.genId(),

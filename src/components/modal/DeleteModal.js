@@ -1,3 +1,4 @@
+import { Utils } from "@/helpers/utils";
 import Modal from "./Modal";
 import ModalId from "./ModalId";
 
@@ -6,10 +7,17 @@ export default function DeleteModal({ editCard, setItems, items, setModifying })
     const modalId = ModalId.deletecard;
 
     function deleteCard() {
-        setItems((items) => ({
-            ...items,
-            Data: items['Data'].filter((data) => data.id !== editCard.id),
-        }));
+        setItems((items) => {
+            if (items.Data.length == 1)
+                return ({
+                    ...items,
+                    Data: [Utils.tempfix],
+                })
+            return ({
+                ...items,
+                Data: items['Data'].filter((data) => data.id !== editCard.id),
+            })
+        })
         setModifying(false);
         document.getElementById(modalId).checked = false;
     }
