@@ -62,9 +62,13 @@
     transition: box-shadow 200ms cubic-bezier(0.18, 0.67, 0.6, 1.22);
 }
 .Item div p {
+    /*  
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+    */
+    word-break: normal;
+    white-space: normal;
 }
 .Item:focus-visible {
     box-shadow: 0 0px 4px 1px #4c9ffe,
