@@ -32,6 +32,7 @@ import DeleteModal from "@/components/modal/DeleteModal";
 import EditModal from "@/components/modal/EditModal";
 
 import Header from "@/components/Header";
+import TemplateItem from '../dndTemplateItem/TemplateItem';
 
 const dropAnimation = {
     sideEffects: defaultDropAnimationSideEffects({
@@ -552,26 +553,50 @@ export function MultipleContainers({
                 shadow
                 unstyled={false}
             >
-                {items[activeContainer.id].map((data, index) => (
-                    <Item
-                        key={data.id}
-                        id={data.id}
-                        data={data}
-                        handle={handle}
-                        style={getItemStyles({
-                            containerId: activeContainer.id,
-                            overIndex: -1,
-                            index: getIndex(data.id),
-                            value: data,
-                            isDragging: false,
-                            isSorting: false,
-                            isDragOverlay: false,
-                        })}
-                        color={Utils.getColor(data.color)}
-                        wrapperStyle={wrapperStyle({ index })}
-                        renderItem={renderItem}
-                    />
-                ))}
+                {items[activeContainer.id].map((data, index) => {
+                    console.log(data)
+                    if (data.isTemplate === true)
+                        return (
+                            <TemplateItem
+                                key={data.id}
+                                id={data.id}
+                                data={data}
+                                handle={handle}
+                                style={getItemStyles({
+                                    containerId: activeContainer.id,
+                                    overIndex: -1,
+                                    index: getIndex(data.id),
+                                    value: data,
+                                    isDragging: false,
+                                    isSorting: false,
+                                    isDragOverlay: false,
+                                })}
+                                color={Utils.getColor(data.color)}
+                                wrapperStyle={wrapperStyle({ index })}
+                                renderItem={renderItem}
+                            />
+                        )
+                    return (
+                        <Item
+                            key={data.id}
+                            id={data.id}
+                            data={data}
+                            handle={handle}
+                            style={getItemStyles({
+                                containerId: activeContainer.id,
+                                overIndex: -1,
+                                index: getIndex(data.id),
+                                value: data,
+                                isDragging: false,
+                                isSorting: false,
+                                isDragOverlay: false,
+                            })}
+                            color={Utils.getColor(data.color)}
+                            wrapperStyle={wrapperStyle({ index })}
+                            renderItem={renderItem}
+                        />
+                    )
+                })}
             </Container>
         );
     }
