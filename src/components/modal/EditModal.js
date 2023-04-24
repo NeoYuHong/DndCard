@@ -30,7 +30,9 @@ export default function EditModal({ editCard, setItems, items, setModifying }) {
     }, [editCard]);
 
     // Save changes
-    const save = () => {
+    const save = (e) => {
+
+        e.preventDefault();
 
         // Validation regex
         const isNumber = new RegExp(/^[0-9]+$/);
@@ -106,7 +108,7 @@ export default function EditModal({ editCard, setItems, items, setModifying }) {
             </div>
 
             {/* Editing form */}
-            <form>
+            <div onSubmit={save}>
 
                 {/* Title */}
                 <div className="grid grid-cols-3 py-2 w-full">
@@ -126,7 +128,7 @@ export default function EditModal({ editCard, setItems, items, setModifying }) {
                     <input type="text" className="col-span-3 sm:col-span-2 input input-bordered input-sm w-full" onBlur={setValue} name={modalId + "value"} id={modalId + "value"} defaultValue={editCard.value} ref={value} />
                 </div>
 
-            </form>
+            </div>
 
             {/* Save button */}
             <div class="pt-5 modal-action">
