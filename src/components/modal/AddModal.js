@@ -2,12 +2,16 @@ import Modal from "@/components/modal/Modal";
 import { nanoid } from "nanoid";
 import { useRef } from "react";
 import ModalId from "./ModalId";
+import { Utils } from "@/helpers/utils";
 
 export default function AddModal({ setItems, editCard }) {
 
     const modalId = ModalId.addcard;
 
-    const valueInput = useRef(null)
+    const value = useRef(null)
+    const title = useRef(null)
+    const description = useRef(null)
+    const manualValue = useRef(null)
 
     function removeCard() {
 
@@ -39,11 +43,29 @@ export default function AddModal({ setItems, editCard }) {
         e.preventDefault();
 
         // Validation regex
-        const isNumber = new RegExp(/^[0-9]+$/);
+        const validateValue = new RegExp(/^[0-9]+$/);
+        const validateManualValue = new RegExp(/^[0-9]*$/);
 
-        // Show invalid alert
-        if (!isNumber.test(valueInput.current.value))
-            return document.getElementById(`${modalId}invalid`).classList.remove("hidden");
+        // if there is manual value 
+        if (manualValue.current.value.length > 0) {
+
+            // check if manual value is valid
+            if (!validateManualValue.test(manualValue.current.value)) {
+                document.getElementById(`${modalId}invalid`).classList.remove("hidden");
+                document.getElementById(`${modalId}invalidmessage`).innerHTML = "Warning: Please input valid number for Manual Value!";
+                return
+            }
+
+        } else {
+
+            // check if value is valid
+            if (!validateValue.test(value.current.value)) {
+                document.getElementById(`${modalId}invalid`).classList.remove("hidden");
+                document.getElementById(`${modalId}invalidmessage`).innerHTML = "Warning: Please input valid number for Value!";
+                return
+            }
+
+        }
 
         // Hide invalid alert
         document.getElementById(`${modalId}invalid`).classList.add("hidden");
@@ -51,7 +73,10 @@ export default function AddModal({ setItems, editCard }) {
         if (!editCard) return;
 
         editCard.data.current.id = nanoid(11);
-        editCard.data.current.value = valueInput.current.value;
+        editCard.data.current.title = title.current.value;
+        editCard.data.current.description = description.current.value;
+        editCard.data.current.value = value.current.value;
+        editCard.data.current.manualValue = manualValue.current.value;
 
         // Close modal
         document.getElementById(modalId).checked = false;
@@ -103,10 +128,37 @@ export default function AddModal({ setItems, editCard }) {
             <div>
 
                 {/* <h3 className="font-bold text-md pb-2">{card.prompt ?? `Enter value for ${card.title}`}</h3> */}
-                <div className="grid grid-cols-3 py-2">
-                    <label className="col-span-3 pb-2 sm:col-span-2 sm:pb-0" htmlFor={modalId + "value"}>{card.prompt ?? `Enter value for ${card.title}`} {card.preUnit && `(${card.preUnit})`}:</label>
-                    <input autoFocus={true} type="text" className="col-span-3 sm:col-span-1 input input-bordered input-sm w-full max-w-xs" name={modalId + "value"} id={modalId + "value"} defaultValue={card.value} ref={valueInput} />
+
+                {/* Title */}
+                <div className="grid grid-cols-3 py-2 w-full">
+                    <label className="col-span-3 pb-2 sm:col-span-1 sm:pb-0" htmlFor={modalId + "title"}>Title: </label>
+                    <input autoFocus={true} type="text" className="col-span-3 sm:col-span-2 input input-bordered input-sm w-full" name={modalId + "title"} id={modalId + "title"} defaultValue={card.title} ref={title} />
                 </div>
+
+                {/* Description */}
+                <div className="grid grid-cols-3 py-2">
+                    <label className="col-span-3 pb-2 sm:col-span-1 sm:pb-0" htmlFor={modalId + "description"}>Description: </label>
+                    <textarea rows="5" className="col-span-3 sm:col-span-2 input input-bordered input-sm w-full h-full" name={modalId + "description"} id={modalId + "description"} defaultValue={card.description} ref={description}></textarea>
+                </div>
+
+                {/* Value */}
+                <div className="grid grid-cols-3 py-2">
+                    <label className="col-span-3 pb-2 sm:col-span-1 sm:pb-0" htmlFor={modalId + "value"}>{card.prompt ?? `Enter value for ${card.title}`} {card.preUnit && `(${card.preUnit})`}:</label>
+                    <input type="text" className="col-span-3 sm:col-span-2 input input-bordered input-sm w-full" name={modalId + "value"} id={modalId + "value"} defaultValue={card.value} ref={value} />
+                </div>
+
+                {/* Overwrite */}
+                <div className="grid grid-cols-3 py-2">
+                    <label className="col-span-3 pb-2 sm:col-span-1 sm:pb-0" htmlFor={modalId + "manualvalue"}>Manual Value {card.preUnit && `(${card.preUnit})`}:</label>
+                    <input onKeyDown={Utils.preventExponentialInput} type="number" className="col-span-3 sm:col-span-2 input input-bordered input-sm w-full" onBlur={(e) => {
+                        if (e.currentTarget.value.length > 0)
+                            document.getElementById(`${modalId}hintmanualvalue`).classList.remove("hidden");
+                        else
+                            document.getElementById(`${modalId}hintmanualvalue`).classList.add("hidden");
+                    }} name={modalId + "manualvalue"} id={modalId + "manualvalue"} defaultValue={card.manualValue ?? ''} ref={manualValue} />
+                </div>
+
+                <p id={`${modalId}hintmanualvalue`} className="text-orange-500 text-right text-sm hidden justify-end">Manual Value will overwrite Value! Leave it empty if you do not wish to overwrite.</p>
 
             </div>
         )
@@ -119,7 +171,7 @@ export default function AddModal({ setItems, editCard }) {
     }
 
     return (
-        <Modal id={modalId} closeElement={<CustomCloseButton />}>
+        <Modal id={modalId} className={'w-10/12 sm:w-7/12 max-w-5xl h-5/12'} closeElement={<CustomCloseButton />}>
 
             <ModalHeader />
             <ModalForm />
@@ -143,7 +195,7 @@ export default function AddModal({ setItems, editCard }) {
             <div className="alert alert-warning shadow-lg mt-5 hidden" id={`${modalId}invalid`}>
                 <div>
                     <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-                    <span>Warning: Please input valid number!</span>
+                    <span id={`${modalId}invalidmessage`}>Warning: Please input valid number!</span>
                 </div>
             </div>
 

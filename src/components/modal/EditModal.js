@@ -24,9 +24,9 @@ export default function EditModal({ editCard, setItems, items, setModifying }) {
         document.getElementById(`${modalId}invalid`).classList.add("hidden");
 
         if (editCard.manualValue?.length > 0)
-            document.getElementById(`hintmanualvalue`).classList.remove("invisible");
+            document.getElementById(`${modalId}hintmanualvalue`).classList.remove("invisible");
         else
-            document.getElementById(`hintmanualvalue`).classList.add("invisible");
+            document.getElementById(`${modalId}hintmanualvalue`).classList.add("invisible");
 
         // Update fields
         title.current.value = editCard.title;
@@ -47,17 +47,25 @@ export default function EditModal({ editCard, setItems, items, setModifying }) {
         const validateValue = new RegExp(/^[0-9]+$/);
         const validateManualValue = new RegExp(/^[0-9]*$/);
 
-        // Show invalid alert
-        if (!validateValue.test(value.current.value)) {
-            document.getElementById(`${modalId}invalid`).classList.remove("hidden");
-            document.getElementById(`${modalId}invalidmessage`).innerHTML = "Warning: Please input valid number for Value!";
-            return
-        }
+        // if there is manual value 
+        if (manualValue.current.value.length > 0) {
 
-        if (!validateManualValue.test(manualValue.current.value) && manualValue.current.value.length > 0) {
-            document.getElementById(`${modalId}invalid`).classList.remove("hidden");
-            document.getElementById(`${modalId}invalidmessage`).innerHTML = "Warning: Please input valid number for Manual Value!";
-            return
+            // check if manual value is valid
+            if (!validateManualValue.test(manualValue.current.value)) {
+                document.getElementById(`${modalId}invalid`).classList.remove("hidden");
+                document.getElementById(`${modalId}invalidmessage`).innerHTML = "Warning: Please input valid number for Manual Value!";
+                return
+            }
+
+        } else {
+
+            // check if value is valid
+            if (!validateValue.test(value.current.value)) {
+                document.getElementById(`${modalId}invalid`).classList.remove("hidden");
+                document.getElementById(`${modalId}invalidmessage`).innerHTML = "Warning: Please input valid number for Value!";
+                return
+            }
+
         }
 
         // Hide invalid alert
@@ -103,9 +111,9 @@ export default function EditModal({ editCard, setItems, items, setModifying }) {
         const newEditedFields = { ...editedFields };
         newEditedFields.manualValue = manualValue.current.value;
         if (manualValue.current.value.length > 0)
-            document.getElementById(`hintmanualvalue`).classList.remove("invisible");
+            document.getElementById(`${modalId}hintmanualvalue`).classList.remove("invisible");
         else
-            document.getElementById(`hintmanualvalue`).classList.add("invisible");
+            document.getElementById(`${modalId}hintmanualvalue`).classList.add("invisible");
         setEditedFields(newEditedFields);
     }
 
@@ -159,7 +167,7 @@ export default function EditModal({ editCard, setItems, items, setModifying }) {
                     <input onKeyDown={Utils.preventExponentialInput} type="number" className="col-span-3 sm:col-span-2 input input-bordered input-sm w-full" onBlur={setManualValue} name={modalId + "manualvalue"} id={modalId + "manualvalue"} defaultValue={editCard.manualValue ?? ''} ref={manualValue} />
                 </div>
 
-                <div id="hintmanualvalue" className="invisble justify-end">
+                <div id={`${modalId}hintmanualvalue`} className="invisble justify-end">
                     <p className="text-orange-500 text-right text-sm">Manual Value will overwrite Value! Leave it empty if you do not wish to overwrite.</p>
                 </div>
 
