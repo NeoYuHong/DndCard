@@ -13,6 +13,7 @@ export default function AddModal({ setItems, editCard }) {
 
         // Close modal
         document.getElementById(modalId).checked = false;
+        document.getElementById(`${modalId}invalid`).classList.add("hidden");
 
         // Add card
         // TODO: setItems affecting closing of modal, using timeout to "fix" it. Find better method 
