@@ -19,7 +19,7 @@
         "value": "0",
         "color": "#FF8C00",
         "prompt": "Enter the number of page to be migrated",
-        "expression": "value <= 8 ? 2 : value <= 15 ? 3 : value <= 20 ? 4 : value <= 25 ? 5 : value <= 30 ? 6 : value <= 40 ? 7 : value <= 50 ? 8 : value <= 60 ? 9 : value <= 70 ? 10 : value <= 85 ? 11 : value <= 100 ? 12 : value <= 115 ? 13 : value <= 130 ? 14 : value <= 145 ? 15 : value <= 160 ? 16 : value <= 175 ? 17 : value <= 190 ? 18 : value <= 205 ? 19 : value <= 220 ? 20 : value <= 245 ? 21 : value <= 260 ? 22 : value <= 280 ? 23 : value <= 300 ? 24 : value <= 1000 ? (value - 300) / 25 + 24 : value <= 2000 ? Math.floor((value - 1000) / 30 + 52) : Math.floor((value - 2000) / 35 + 85)"
+        "expression": "value <= 0 ? 0 : value <= 8 ? 2 : value <= 15 ? 3 : value <= 20 ? 4 : value <= 25 ? 5 : value <= 30 ? 6 : value <= 40 ? 7 : value <= 50 ? 8 : value <= 60 ? 9 : value <= 70 ? 10 : value <= 85 ? 11 : value <= 100 ? 12 : value <= 115 ? 13 : value <= 130 ? 14 : value <= 145 ? 15 : value <= 160 ? 16 : value <= 175 ? 17 : value <= 190 ? 18 : value <= 205 ? 19 : value <= 220 ? 20 : value <= 245 ? 21 : value <= 260 ? 22 : value <= 280 ? 23 : value <= 300 ? 24 : value <= 1000 ? (value - 300) / 25 + 24 : value <= 2000 ? Math.floor((value - 1000) / 30 + 52) : Math.floor((value - 2000) / 35 + 85)"
     },
     {
         "name": "Equipment Rental Item",
