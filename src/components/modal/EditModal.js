@@ -28,6 +28,12 @@ export default function EditModal({ editCard, setItems, items, setModifying }) {
         else
             document.getElementById(`${modalId}hintmanualvalue`).classList.add("invisible");
 
+        // Update fields
+        title.current.value = editCard.title;
+        description.current.value = editCard.description;
+        value.current.value = editCard.value;
+        manualValue.current.value = editCard.manualValue;
+
         setEditedFields(editCard);
 
     }, [editCard]);
@@ -118,45 +124,6 @@ export default function EditModal({ editCard, setItems, items, setModifying }) {
         )
     }
 
-    const ModalForm = () => {
-
-        if (editCard == null) return null;
-
-        return (
-            <div onSubmit={save} >
-
-                {/* Title */}
-                <div className="grid grid-cols-3 py-2 w-full" >
-                    <label className="col-span-3 pb-2 sm:col-span-1 sm:pb-0" htmlFor={modalId + "title"}>Title: </label>
-                    <input type="text" className="col-span-3 sm:col-span-2 input input-bordered input-sm w-full" onBlur={setTitleField} name={modalId + "title"} defaultValue={editCard.title} id={modalId + "title"} ref={title} />
-                </div>
-
-                {/* Description */}
-                < div className="grid grid-cols-3 py-2" >
-                    <label className="col-span-3 pb-2 sm:col-span-1 sm:pb-0" htmlFor={modalId + "description"}>Description: </label>
-                    <textarea rows="5" className="col-span-3 sm:col-span-2 input input-bordered input-sm w-full h-full" onBlur={setDescriptionField} name={modalId + "description"} id={modalId + "description"} defaultValue={editCard.description} ref={description}></textarea>
-                </div >
-
-                {/* Value */}
-                < div className="grid grid-cols-3 py-2" >
-                    <label className="col-span-3 pb-2 sm:col-span-1 sm:pb-0" htmlFor={modalId + "value"}>Value {editCard.preUnit && `(${editCard.preUnit})`}:</label>
-                    <input type="number" className="col-span-3 sm:col-span-2 input input-bordered input-sm w-full" onBlur={setValue} name={modalId + "value"} id={modalId + "value"} defaultValue={editCard.value} ref={value} />
-                </div >
-
-                {/* Overwrite */}
-                < div className="grid grid-cols-3 py-2" >
-                    <label className="col-span-3 pb-2 sm:col-span-1 sm:pb-0" htmlFor={modalId + "manualvalue"}>Manual Value {editCard.preUnit && `(${editCard.preUnit})`}:</label>
-                    <input onKeyDown={Utils.preventExponentialInput} type="number" className="col-span-3 sm:col-span-2 input input-bordered input-sm w-full" onBlur={setManualValue} name={modalId + "manualvalue"} id={modalId + "manualvalue"} defaultValue={editCard.manualValue ?? ''} ref={manualValue} />
-                </div >
-
-                <div id={`${modalId}hintmanualvalue`} className="invisble justify-end">
-                    <p className="text-orange-500 text-right text-sm">Manual Value will overwrite Value! Leave it empty if you do not wish to overwrite.</p>
-                </div>
-
-            </div >
-        )
-    }
-
     return (
         <Modal id={modalId} closeElement={<CustomCloseButton />} className={'w-10/12 sm:w-7/12 max-w-5xl h-5/12'}>
 
@@ -171,7 +138,40 @@ export default function EditModal({ editCard, setItems, items, setModifying }) {
                 </div>
             </div>
 
-            <ModalForm />
+            {/* Editing form */}
+            {editCard != null && <div onSubmit={save}>
+
+                {/* Title */}
+                <div className="grid grid-cols-3 py-2 w-full">
+                    <label className="col-span-3 pb-2 sm:col-span-1 sm:pb-0" htmlFor={modalId + "title"}>Title: </label>
+                    <input type="text" className="col-span-3 sm:col-span-2 input input-bordered input-sm w-full" onBlur={setTitleField} name={modalId + "title"} id={modalId + "title"} ref={title} />
+                </div>
+
+                {/* Description */}
+                <div className="grid grid-cols-3 py-2">
+                    <label className="col-span-3 pb-2 sm:col-span-1 sm:pb-0" htmlFor={modalId + "description"}>Description: </label>
+                    <textarea rows="5" className="col-span-3 sm:col-span-2 input input-bordered input-sm w-full h-full" onBlur={setDescriptionField} name={modalId + "description"} id={modalId + "description"} defaultValue={editCard.description} ref={description}></textarea>
+                </div>
+
+                {/* Value */}
+                <div className="grid grid-cols-3 py-2">
+                    <label className="col-span-3 pb-2 sm:col-span-1 sm:pb-0" htmlFor={modalId + "value"}>Value {editCard.preUnit && `(${editCard.preUnit})`}:</label>
+                    <input type="number" className="col-span-3 sm:col-span-2 input input-bordered input-sm w-full" onBlur={setValue} name={modalId + "value"} id={modalId + "value"} defaultValue={editCard.value} ref={value} />
+                </div>
+
+                {/* Overwrite */}
+                <div className="grid grid-cols-3 py-2">
+                    <label className="col-span-3 pb-2 sm:col-span-1 sm:pb-0" htmlFor={modalId + "manualvalue"}>Manual Value {editCard.preUnit && `(${editCard.preUnit})`}:</label>
+                    <input onKeyDown={Utils.preventExponentialInput} type="number" className="col-span-3 sm:col-span-2 input input-bordered input-sm w-full" onBlur={setManualValue} name={modalId + "manualvalue"} id={modalId + "manualvalue"} defaultValue={editCard.manualValue ?? ''} ref={manualValue} />
+                </div>
+
+
+            </div>}
+
+            <div id={`${modalId}hintmanualvalue`} className="invisble justify-end">
+                <p className="text-orange-500 text-right text-sm">Manual Value will overwrite Value! Leave it empty if you do not wish to overwrite.</p>
+            </div>
+
 
             {/* Save button */}
             <div class="pt-3 modal-action">

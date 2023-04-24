@@ -106,10 +106,12 @@ export class Utils {
             });
         }
 
-        try {
-            const reader = new FileReader();
-            reader.readAsText(file);
-            reader.onload = () => {
+        const reader = new FileReader();
+        reader.readAsText(file);
+        reader.onload = () => {
+
+            try {
+
                 const contents = reader.result
                 const parsed = JSON.parse(contents).map((item) => {
                     item.id = Utils.genId()
@@ -130,20 +132,21 @@ export class Utils {
                     progress: undefined,
                     theme: "dark",
                 });
-            };
-        } catch (error) {
-            toast.success(`Error importing! Please check the content of the file.`, {
-                position: "bottom-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "dark",
-            });
-            console.error(error)
-        }
+
+            } catch (error) {
+                toast.error("Error importing! Please check the content of the file.", {
+                    position: "bottom-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+                console.error(error)
+            }
+        };
+
 
     }
 
