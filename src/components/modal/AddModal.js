@@ -43,8 +43,8 @@ export default function AddModal({ setItems, editCard }) {
         e.preventDefault();
 
         // Validation regex
-        const validateValue = new RegExp(/^[0-9]+$/);
-        const validateManualValue = new RegExp(/^[0-9]*$/);
+        const validateValue = new RegExp(/^[0-9.]+$/);
+        const validateManualValue = new RegExp(/^[0-9.]*$/);
 
         // if there is manual value 
         if (manualValue.current.value.length > 0) {
@@ -97,6 +97,22 @@ export default function AddModal({ setItems, editCard }) {
 
     };
 
+    function onBlurManual(e) {
+        if (e.currentTarget.value.length > 0) {
+            document.getElementById(`${modalId}hintmanualvalue`).classList.remove("hidden");
+            value.current.disabled = true;
+            value.current.readonly = true;
+        } else {
+            document.getElementById(`${modalId}hintmanualvalue`).classList.add("hidden");
+            value.current.disabled = false;
+            value.current.readonly = false;
+        }
+    }
+
+    function onBlurValue(e) {
+        document.getElementById(`${modalId}calvalue`).value = Utils.computeValue(value.current.value, editCard.data.current.expression);
+    }
+
     const ModalHeader = () => {
         return (
             <div class="sm:flex sm:items-start">
@@ -127,8 +143,6 @@ export default function AddModal({ setItems, editCard }) {
         return (
             <div>
 
-                {/* <h3 className="font-bold text-md pb-2">{card.prompt ?? `Enter value for ${card.title}`}</h3> */}
-
                 {/* Title */}
                 <div className="grid grid-cols-3 py-2 w-full">
                     <label className="col-span-3 pb-2 sm:col-span-1 sm:pb-0" htmlFor={modalId + "title"}>Title: </label>
@@ -143,19 +157,17 @@ export default function AddModal({ setItems, editCard }) {
 
                 {/* Value */}
                 <div className="grid grid-cols-3 py-2">
-                    <label className="col-span-3 pb-2 sm:col-span-1 sm:pb-0" htmlFor={modalId + "value"}>{card.prompt ?? `Enter value for ${card.title}`} {card.preUnit && `(${card.preUnit})`}:</label>
-                    <input type="text" className="col-span-3 sm:col-span-2 input input-bordered input-sm w-full" name={modalId + "value"} id={modalId + "value"} defaultValue={card.value} ref={value} />
+                    <label className="col-span-3 pb-2 sm:col-span-1 sm:pb-0" htmlFor={modalId + "value"}>Value{editCard.data.current.preUnit && ` (${editCard.data.current.preUnit})`}:</label>
+                    <div className="col-span-3 sm:col-span-2 w-full grid grid-cols-2 gap-3">
+                        <input type="text" className="input input-bordered input-sm w-full" name={modalId + "value"} id={modalId + "value"} defaultValue={card.value} ref={value} onBlur={onBlurValue} />
+                        <input type="number" className="input input-bordered input-sm w-full col-span-1 bg-base-200" readOnly disabled id={`${modalId}calvalue`} />
+                    </div>
                 </div>
 
-                {/* Overwrite */}
+                {/* Manual */}
                 <div className="grid grid-cols-3 py-2">
                     <label className="col-span-3 pb-2 sm:col-span-1 sm:pb-0" htmlFor={modalId + "manualvalue"}>Manual Value {card.preUnit && `(${card.preUnit})`}:</label>
-                    <input onKeyDown={Utils.preventExponentialInput} type="number" className="col-span-3 sm:col-span-2 input input-bordered input-sm w-full" onBlur={(e) => {
-                        if (e.currentTarget.value.length > 0)
-                            document.getElementById(`${modalId}hintmanualvalue`).classList.remove("hidden");
-                        else
-                            document.getElementById(`${modalId}hintmanualvalue`).classList.add("hidden");
-                    }} name={modalId + "manualvalue"} id={modalId + "manualvalue"} defaultValue={card.manualValue ?? ''} ref={manualValue} />
+                    <input onKeyDown={Utils.preventExponentialInput} type="number" className="col-span-3 sm:col-span-2 input input-bordered input-sm w-full" onBlur={onBlurManual} name={modalId + "manualvalue"} id={modalId + "manualvalue"} defaultValue={card.manualValue ?? ''} ref={manualValue} />
                 </div>
 
                 <p id={`${modalId}hintmanualvalue`} className="text-orange-500 text-right text-sm hidden justify-end">Manual Value will overwrite Value! Leave it empty if you do not wish to overwrite.</p>

@@ -23,16 +23,23 @@ export default function EditModal({ editCard, setItems, items, setModifying }) {
         // reset
         document.getElementById(`${modalId}invalid`).classList.add("hidden");
 
-        if (editCard.manualValue?.length > 0)
+        if (editCard.manualValue?.length > 0) {
             document.getElementById(`${modalId}hintmanualvalue`).classList.remove("invisible");
-        else
+            value.current.disabled = true;
+            value.current.readonly = true;
+        } else {
             document.getElementById(`${modalId}hintmanualvalue`).classList.add("invisible");
+            value.current.disabled = false;
+            value.current.readonly = false;
+        }
 
         // Update fields
         title.current.value = editCard.title;
         description.current.value = editCard.description;
         value.current.value = editCard.value;
         manualValue.current.value = editCard.manualValue;
+
+        document.getElementById(`${modalId}calvalue`).value = Utils.computeValue(value.current.value, editCard.expression);
 
         setEditedFields(editCard);
 
@@ -44,8 +51,8 @@ export default function EditModal({ editCard, setItems, items, setModifying }) {
         e.preventDefault();
 
         // Validation regex
-        const validateValue = new RegExp(/^[0-9]+$/);
-        const validateManualValue = new RegExp(/^[0-9]*$/);
+        const validateValue = new RegExp(/^[0-9.]+$/);
+        const validateManualValue = new RegExp(/^[0-9.]*$/);
 
         // if there is manual value 
         if (manualValue.current.value.length > 0) {
@@ -102,16 +109,23 @@ export default function EditModal({ editCard, setItems, items, setModifying }) {
     function setValue() {
         const newEditedFields = { ...editedFields };
         newEditedFields.value = value.current.value;
+        document.getElementById(`${modalId}calvalue`).value = Utils.computeValue(value.current.value, editCard.expression);
         setEditedFields(newEditedFields);
     }
 
     function setManualValue() {
         const newEditedFields = { ...editedFields };
         newEditedFields.manualValue = manualValue.current.value;
-        if (manualValue.current.value.length > 0)
+        if (manualValue.current.value.length > 0) {
             document.getElementById(`${modalId}hintmanualvalue`).classList.remove("invisible");
-        else
+            value.current.disabled = true;
+            value.current.readonly = true;
+
+        } else {
             document.getElementById(`${modalId}hintmanualvalue`).classList.add("invisible");
+            value.current.disabled = false;
+            value.current.readonly = false;
+        }
         setEditedFields(newEditedFields);
     }
 
@@ -156,15 +170,17 @@ export default function EditModal({ editCard, setItems, items, setModifying }) {
                 {/* Value */}
                 <div className="grid grid-cols-3 py-2">
                     <label className="col-span-3 pb-2 sm:col-span-1 sm:pb-0" htmlFor={modalId + "value"}>Value {editCard.preUnit && `(${editCard.preUnit})`}:</label>
-                    <input type="number" className="col-span-3 sm:col-span-2 input input-bordered input-sm w-full" onBlur={setValue} name={modalId + "value"} id={modalId + "value"} defaultValue={editCard.value} ref={value} />
+                    <div className="col-span-3 sm:col-span-2 w-full grid grid-cols-2 gap-3">
+                        <input type="number" className="input input-bordered input-sm w-full col-span-1" onBlur={setValue} name={modalId + "value"} id={modalId + "value"} defaultValue={editCard.value} ref={value} />
+                        <input type="number" className="input input-bordered input-sm w-full col-span-1 bg-base-200" readOnly disabled id={modalId + "calvalue"} />
+                    </div>
                 </div>
 
-                {/* Overwrite */}
+                {/* Manual */}
                 <div className="grid grid-cols-3 py-2">
-                    <label className="col-span-3 pb-2 sm:col-span-1 sm:pb-0" htmlFor={modalId + "manualvalue"}>Manual Value {editCard.preUnit && `(${editCard.preUnit})`}:</label>
+                    <label className="col-span-3 pb-2 sm:col-span-1 sm:pb-0" htmlFor={modalId + "manualvalue"}>Manual Value {editCard.postUnit && `(${editCard.postUnit})`}:</label>
                     <input onKeyDown={Utils.preventExponentialInput} type="number" className="col-span-3 sm:col-span-2 input input-bordered input-sm w-full" onBlur={setManualValue} name={modalId + "manualvalue"} id={modalId + "manualvalue"} defaultValue={editCard.manualValue ?? ''} ref={manualValue} />
                 </div>
-
 
             </div>}
 
