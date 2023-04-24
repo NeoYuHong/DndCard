@@ -1,10 +1,10 @@
-import Modal from "./Modal";
 import { Utils } from "@/helpers/utils";
+import Modal from "./Modal";
 
 export default function PreviewModal({ items }) {
 
     const modalId = "previewcard";
-    items = Utils.parseDataExcel(items.Data);
+    items = Utils.parseData(items.Data);
 
     return (
         <Modal id={modalId} className="w-11/12 max-w-5xl h-5/6">

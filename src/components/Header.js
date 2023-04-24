@@ -31,13 +31,18 @@ export default function Header({ items, setItems }) {
                         <ul tabIndex={0} className="menu dropdown-content p-2 shadow bg-base-100 rounded-box w-52 mt-4">
                             <li>
                                 <button onClick={() => {
-                                    Utils.exportExcel(Utils.parseDataExcel(items.Data))
+                                    Utils.exportExcel(Utils.parseData(items.Data))
                                 }}>EXCEL</button>
                             </li>
                             <li>
                                 <button onClick={() => {
-                                    Utils.exportJson(Utils.parseDataJson(items.Data))
+                                    Utils.exportJson(Utils.parseDataRaw(items.Data))
                                 }}>JSON</button>
+                            </li>
+                            <li>
+                                <button onClick={() => {
+                                    Utils.exportPDF(Utils.parseData(items.Data))
+                                }}>PDF</button>
                             </li>
                         </ul>
                     </div>

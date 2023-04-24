@@ -73,7 +73,7 @@ export function MultipleContainers({
 
         // Load data
         (async () => {
-            const template = await Utils.genTemplate()
+            const template = await Utils.generateTemplate()
             const data = await Utils.genData(itemCount)
             const newItems = { ...items, Template: template, Data: data }
             setItems(newItems)
@@ -473,7 +473,7 @@ export function MultipleContainers({
                             (item) => {
                                 const newItem = { ...item };
                                 if (item.id == active.id) {
-                                    newItem.id = Utils.genId();
+                                    newItem.id = Utils.generateId();
                                     newItem.isTemplate = true;
                                     delete newItem.new;
                                 }

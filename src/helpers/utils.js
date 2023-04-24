@@ -3,15 +3,59 @@ import { nanoid } from "nanoid";
 import card from '@/templates/card.json'
 import { evaluate } from 'mathjs'
 import { toast } from "react-toastify";
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
 
 const defaultInitializer = (index) => index;
 export class Utils {
 
-    static genId() {
+    static exportPDF(data) {
+        pdfMake.vfs = pdfFonts.pdfMake.vfs;
+
+        const documentDefinition = {
+            content: [
+                { text: '', style: 'header' },
+                {
+                    style: 'table',
+                    table: {
+                        headerRows: 1,
+                        widths: [30, '*', '*', '*'],
+                        body: [
+                            [
+                                { text: 'SN', fillColor: '#7CFC00' },
+                                { text: 'Title', fillColor: '#7CFC00' },
+                                { text: 'Description', fillColor: '#7CFC00' },
+                                { text: 'Value', fillColor: '#7CFC00' }
+                            ],
+                            ...data.map((item, index) => {
+                                const value = item.manualValue?.length ? item.manualValue : item.value;
+                                return [index + 1, item.title, item.description, value];
+                            })
+                        ],
+                    },
+                },
+            ],
+            styles: {
+                header: {
+                    fontSize: 16,
+                    bold: true,
+                    alignment: 'center',
+                    margin: [0, 0, 0, 10]
+                },
+                table: {
+                    margin: [0, 10, 0, 0],
+                },
+            },
+        };
+
+        pdfMake.createPdf(documentDefinition).download(this.generateFilename('pdf'));
+    }
+
+    static generateId() {
         return nanoid(11)
     }
 
-    static async genTemplate() {
+    static async generateTemplate() {
         try {
             const output = card
                 .filter((item) => !item.disabled)
@@ -35,13 +79,13 @@ export class Utils {
         XLSX.writeFile(wb, filename);
     }
 
-    static parseDataExcel(file) {
+    static parseData(file) {
         file = file.filter((item) => item.id !== "tempfix")
-        file = file.map(({ title, description, value, manualValue, expression }, index) => ({ SN: index + 1, title, description, value: manualValue?.length > 0 ? manualValue : Utils.computeValue(value, expression), }));
+        file = file.map(({ title, description, value, manualValue, expression }, index) => ({ SN: index + 1, title, description, value: manualValue?.length > 0 ? manualValue : this.computeValue(value, expression), }));
         return file
     }
 
-    static parseDataJson(data) {
+    static parseDataRaw(data) {
         return data
             .filter((item) => item.id !== "tempfix")
             .map((item) => {
@@ -114,7 +158,7 @@ export class Utils {
 
                 const contents = reader.result
                 const parsed = JSON.parse(contents).map((item) => {
-                    item.id = Utils.genId()
+                    item.id = Utils.generateId()
                     return item;
                 })
                 setItems((items) => ({
@@ -166,7 +210,7 @@ export class Utils {
             return [this.tempfix]
         return [...new Array(length)].map((_, index) => {
             return {
-                "id": this.genId(),
+                "id": this.generateId(),
                 "name": "Training Sessions Item",
                 "title": `Training Sessions ${index + 1}`,
                 "description": "Calculate training session cost",
