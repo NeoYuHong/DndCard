@@ -127,8 +127,7 @@ const Item = memo(
                             </p>
 
                             <p>
-                                <span className="font-bold">Value {data.postUnit && `(${data.postUnit})`}</span>: {Utils.computeValue(data.value, data.expression)}
-                                {/* <span className="font-bold">Value {data.postUnit && `(${data.postUnit})`}</span>: {data.value * data.multiplier} */}
+                                <span className="font-bold">Value {data.postUnit && `(${data.postUnit})`}</span>: {data.manualValue?.length > 0 ? data.manualValue : Utils.computeValue(data.value, data.expression)}
                             </p>
 
                         </div>

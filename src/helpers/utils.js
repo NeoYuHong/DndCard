@@ -200,4 +200,11 @@ export class Utils {
         }
     }
 
+    static preventExponentialInput(event) {
+        const key = event.key;
+        if (key === 'E' || key === 'e' || key === '+' || key === '-') {
+            event.preventDefault();
+        }
+    }
+
 }
