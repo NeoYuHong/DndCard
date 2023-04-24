@@ -2,6 +2,7 @@ import * as XLSX from "xlsx";
 import { nanoid } from "nanoid";
 import card from '@/templates/card.json'
 import { evaluate } from 'mathjs'
+import { toast } from "react-toastify";
 
 const defaultInitializer = (index) => index;
 export class Utils {
@@ -45,6 +46,7 @@ export class Utils {
             .filter((item) => item.id !== "tempfix")
             .map((item) => {
                 delete item.isTemplate
+                delete item.id
                 return item;
             })
     }
@@ -82,7 +84,56 @@ export class Utils {
 
     }
 
-    static importJson(file) {
+    static async importJson(event, setItems) {
+
+        if (!event || !event.target || !event.target.files || event.target.files.length === 0) {
+            return;
+        }
+
+
+        const file = event.target.files[0];
+
+        // Check if the file extension is .json
+        if (file.name.split('.').pop().toLowerCase() !== 'json') {
+            return toast.error("Invalid file format! Please select JSON file.", {
+                position: "bottom-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+        }
+
+        try {
+            const reader = new FileReader();
+            reader.readAsText(file);
+            reader.onload = () => {
+                const contents = reader.result
+                const parsed = JSON.parse(contents).map((item) => {
+                    item.id = Utils.genId()
+                    return item;
+                })
+                setItems((items) => ({
+                    Template: items.Template,
+                    Data: [...items.Data, ...parsed]
+                }))
+                event.target.value = null;
+                toast.success(`Imported ${parsed.length} cards!`, {
+                    position: "bottom-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+            };
+        } catch (error) {
+            console.error(error)
+        }
 
     }
 

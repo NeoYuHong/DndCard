@@ -1,4 +1,6 @@
 import { MultipleContainers } from '@/components/dnd/MultipleContainers';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Index() {
   return (
@@ -7,6 +9,7 @@ export default function Index() {
         // containerStyle={{ marginBottom: '2.5rem' }}
         scrollable={true}
       />
+      <ToastContainer />
     </div>
   );
 };

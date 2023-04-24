@@ -212,7 +212,7 @@ export function MultipleContainers({
             <EditModal editCard={editCard} setItems={setItems} items={items} setModifying={setModifying} />
             <AddModal editCard={editCard} setItems={setItems} />
 
-            <Header items={items} />
+            <Header items={items} setItems={setItems} />
 
             <div>
                 <DndContext
