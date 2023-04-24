@@ -6,6 +6,7 @@ import { forwardRef, memo, useEffect } from 'react';
 import classNames from 'classnames';
 import { useDndContext } from '@dnd-kit/core';
 import ModalId from '../modal/ModalId';
+import { Utils } from '@/helpers/utils';
 
 const Item = memo(
     forwardRef(
@@ -126,7 +127,8 @@ const Item = memo(
                             </p>
 
                             <p>
-                                <span className="font-bold">Value {data.postUnit && `(${data.postUnit})`}</span>: {data.value * data.multiplier}
+                                <span className="font-bold">Value {data.postUnit && `(${data.postUnit})`}</span>: {Utils.computeValue(data.value, data.expression)}
+                                {/* <span className="font-bold">Value {data.postUnit && `(${data.postUnit})`}</span>: {data.value * data.multiplier} */}
                             </p>
 
                         </div>

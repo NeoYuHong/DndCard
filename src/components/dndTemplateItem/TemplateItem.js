@@ -126,7 +126,7 @@ const TemplateItem = memo(
                             </p>
 
                             {/* <p>
-                                <span className="font-bold">Value</span>: {data.value * data.multiplier}
+                                <span className="font-bold">Expression</span>: {data.expression}
                             </p> */}
 
                         </div>

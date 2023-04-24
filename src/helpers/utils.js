@@ -1,6 +1,7 @@
 import * as XLSX from "xlsx";
 import { nanoid } from "nanoid";
 import card from '@/templates/card.json'
+import { evaluate } from 'mathjs'
 
 const defaultInitializer = (index) => index;
 export class Utils {
@@ -35,7 +36,8 @@ export class Utils {
 
     static parseCardData(file) {
         file = file.filter((item) => item.id !== "tempfix")
-        file = file.map(({ title, description, value, multiplier }, index) => ({ SN: index + 1, title, description, value: value * multiplier, }));
+        // file = file.map(({ title, description, value, multiplier }, index) => ({ SN: index + 1, title, description, value: value * multiplier, }));
+        file = file.map(({ title, description, value, multiplier, expression }, index) => ({ SN: index + 1, title, description, value: Utils.computeValue(value, expression), }));
         return file
     }
 
@@ -62,6 +64,7 @@ export class Utils {
                 "unit": "$",
                 "value": "",
                 "multiplier": "1.75",
+                "expression": "value * 1.75",
                 "color": "red"
             }
         });
@@ -186,5 +189,15 @@ export class Utils {
 
         return undefined;
     };
+
+    static computeValue(value, expression) {
+        try {
+            if (!expression || !value) return 0;
+            return evaluate(expression, { value: value, Math });
+        } catch (error) {
+            console.log(error)
+            return 'expression error';
+        }
+    }
 
 }
