@@ -26,19 +26,64 @@ export class Utils {
         }
     }
 
-    static async exportToExcel(data) {
-        const filename = 'data.xlsx';
+    static async exportExcel(data) {
+        const filename = `${this.generateFilename('xlsx')}`;
         const ws = XLSX.utils.json_to_sheet(data);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "People");
         XLSX.writeFile(wb, filename);
     }
 
-    static parseCardData(file) {
+    static parseDataExcel(file) {
         file = file.filter((item) => item.id !== "tempfix")
-        // file = file.map(({ title, description, value, multiplier }, index) => ({ SN: index + 1, title, description, value: value * multiplier, }));
-        file = file.map(({ title, description, value, multiplier, expression }, index) => ({ SN: index + 1, title, description, value: Utils.computeValue(value, expression), }));
+        file = file.map(({ title, description, value, manualValue, expression }, index) => ({ SN: index + 1, title, description, value: manualValue?.length > 0 ? manualValue : Utils.computeValue(value, expression), }));
         return file
+    }
+
+    static parseDataJson(data) {
+        return data
+            .filter((item) => item.id !== "tempfix")
+            .map((item) => {
+                delete item.isTemplate
+                return item;
+            })
+    }
+
+    static generateFilename(extension) {
+        const timestamp = new Date().getTime();
+        const filename = `file_${timestamp}.${extension}`;
+        return filename;
+    }
+
+    static exportJson(data) {
+
+        // Convert the JSON object to a string
+        const jsonString = JSON.stringify(data, null, 3);
+
+        // Create a Blob from the string
+        const blob = new Blob([jsonString], { type: 'application/json' });
+
+        // Create a URL from the Blob
+        const url = URL.createObjectURL(blob);
+
+        // Create a link element
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${this.generateFilename('json')}`;
+
+        // Append the link to the document body
+        document.body.appendChild(link);
+
+        // Click the link to download the file
+        link.click();
+
+        // Clean up the URL object
+        URL.revokeObjectURL(url);
+
+    }
+
+    static importJson(file) {
+
     }
 
     static createRange(length, initializer = defaultInitializer) {

@@ -97,14 +97,6 @@ export function MultipleContainers({
         })
     );
 
-    useEffect(() => {
-        console.log(editCard)
-    }, [editCard])
-
-    useEffect(() => {
-        console.log(items.Data)
-    }, [items])
-
     /**
      * Custom collision detection strategy optimized for multiple containers
      *

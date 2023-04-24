@@ -4,7 +4,7 @@ import { Utils } from "@/helpers/utils";
 export default function PreviewModal({ items }) {
 
     const modalId = "previewcard";
-    items = Utils.parseCardData(items.Data);
+    items = Utils.parseDataExcel(items.Data);
 
     return (
         <Modal id={modalId} className="w-11/12 max-w-5xl h-5/6">
