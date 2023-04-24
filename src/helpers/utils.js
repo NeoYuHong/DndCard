@@ -132,6 +132,16 @@ export class Utils {
                 });
             };
         } catch (error) {
+            toast.success(`Error importing! Please check the content of the file.`, {
+                position: "bottom-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
             console.error(error)
         }
 
