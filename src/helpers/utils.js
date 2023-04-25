@@ -205,7 +205,7 @@ export class Utils {
                     }, items.Template)
 
                     // Show success message for imported data and template
-                    toast.success(`Imported ${parsedData.length} data and ${Template.length - items.Template.length} template!`, {
+                    toast.success(`Imported ${parsedData.length} data and ${Template.length - duplicate} template!`, {
                         position: "bottom-right",
                         autoClose: 3000,
                         hideProgressBar: false,
