@@ -60,7 +60,7 @@ export class Utils {
             const output = card
                 .filter((item) => !item.disabled)
                 .map((item) => {
-                    item.id = nanoid(11)
+                    item.id = this.generateId();
                     return item;
                 })
 
@@ -77,6 +77,21 @@ export class Utils {
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "People");
         XLSX.writeFile(wb, filename);
+    }
+
+    static parseItems(data) {
+        return {
+            Data: this.parseDataRaw(data.Data),
+            Template: this.parseTemplate(data.Template)
+        }
+    }
+
+    static parseTemplate(file) {
+        file = file.map((item) => {
+            delete item.id
+            return item;
+        });
+        return file
     }
 
     static parseData(file) {
@@ -128,12 +143,18 @@ export class Utils {
 
     }
 
+    static validateItem(items) {
+        if (!items) return false;
+        if (!items['Data']) return false;
+        if (!items['Template']) return false;
+        return true;
+    }
+
     static async importJson(event, setItems) {
 
         if (!event || !event.target || !event.target.files || event.target.files.length === 0) {
             return;
         }
-
 
         const file = event.target.files[0];
 
@@ -156,32 +177,77 @@ export class Utils {
 
             try {
 
-                const contents = reader.result
-                const parsed = JSON.parse(contents).map((item) => {
+                const contents = JSON.parse(reader.result)
+
+                if (!this.validateItem(contents))
+                    throw 'Invalid data structure!'
+
+                const parsedTemplate = contents.Template.map((item) => {
+                    item.id = item.name;
+                    return item;
+                })
+
+                const parsedData = contents.Data.map((item) => {
                     item.id = Utils.generateId()
                     return item;
                 })
-                setItems((items) => ({
-                    Template: items.Template,
-                    Data: [...items.Data, ...parsed]
-                }))
+
+                let duplicate = 0;
+
+                setItems((items) => {
+
+                    const Template = parsedTemplate.reduce((acc, item) => {
+                        if (acc.findIndex(x => x.name === item.name) === -1) {
+                            acc.push(item);
+                        } else
+                            duplicate++;
+                        return acc;
+                    }, items.Template)
+
+                    // Show success message for imported data and template
+                    toast.success(`Imported ${parsedData.length} data and ${Template.length - items.Template.length} template!`, {
+                        position: "bottom-right",
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                    });
+
+                    return ({
+                        Template,
+                        Data: [...items.Data, ...parsedData]
+                    })
+                })
+
                 event.target.value = null;
-                toast.success(`Imported ${parsed.length} cards!`, {
-                    position: "bottom-right",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "dark",
-                });
+
+                // If duplicate templates were found, show an error message after a short delay
+                if (duplicate > 0) {
+                    const delayTime = 800; // Time to wait before showing the error message, in milliseconds
+                    setTimeout(() => {
+                        toast.success(`${duplicate} duplicate template(s) removed.`, {
+                            position: "bottom-right",
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "dark",
+                        });
+                    }, delayTime);
+                }
+
 
             } catch (error) {
                 toast.error("Error importing! Please check the content of the file.", {
                     position: "bottom-right",
                     autoClose: 3000,
                     hideProgressBar: false,
+                    closeOnClick: true,
                     pauseOnHover: true,
                     draggable: true,
                     progress: undefined,
@@ -204,7 +270,7 @@ export class Utils {
         "invis": true,
     }
 
-    static async genData(length) {
+    static async generateData(length) {
         // TODO: if length is 0, can't drag item in. Using this as a temp fix
         if (length == 0)
             return [this.tempfix]
@@ -241,11 +307,11 @@ export class Utils {
                 return '#00bcd4';
             case 'RED':
                 return '#ef769f';
+            case undefined:
+                return '#ef769f';
             default:
                 return color;
         }
-
-        return undefined;
     }
 
     static multipleContainersCoordinateGetter = (

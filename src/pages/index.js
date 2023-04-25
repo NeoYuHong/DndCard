@@ -9,7 +9,17 @@ export default function Index() {
         // containerStyle={{ marginBottom: '2.5rem' }}
         scrollable={true}
       />
-      <ToastContainer />
+      <ToastContainer
+        position="bottom-right"
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss={true}
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
     </div>
   );
 };

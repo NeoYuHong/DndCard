@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { forwardRef } from 'react';
 import { Handle } from '@/components/dndButton/Handle';
 import { Remove } from '@/components/dndButton/Remove';
+import { AddTemplate } from '../dndButton/AddTemplate';
 
 const Container = forwardRef(
     (
@@ -20,6 +21,9 @@ const Container = forwardRef(
             scrollable,
             shadow,
             unstyled,
+            items,
+            id,
+            onAddTemplate,
             ...props
         },
         ref
@@ -52,6 +56,7 @@ const Container = forwardRef(
                         {label}
                         <div className={styles.Actions}>
                             {onRemove ? <Remove onClick={onRemove} /> : undefined}
+                            {id == 'Template' && onAddTemplate && <AddTemplate onClick={onAddTemplate} />}
                             <Handle {...handleProps} />
                         </div>
                     </div>

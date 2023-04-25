@@ -11,6 +11,7 @@ export default function DroppableContainer({
     disabled,
     id,
     items,
+    onAddTemplate,
     style,
     ...props
 }) {
@@ -50,6 +51,9 @@ export default function DroppableContainer({
                 ...attributes,
                 ...listeners,
             }}
+            id={id}
+            items={items}
+            onAddTemplate={onAddTemplate}
             columns={columns}
             {...props}
         >

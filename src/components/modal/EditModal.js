@@ -141,14 +141,14 @@ export default function EditModal({ editCard, setItems, items, setModifying }) {
     return (
         <Modal id={modalId} closeElement={<CustomCloseButton />} className={'w-10/12 sm:w-7/12 max-w-5xl h-5/12'}>
 
-            <div class="sm:flex sm:items-start">
-                <div class="mx-auto flex h-7 w-6 items-center justify-center rounded-full ">
-                    <svg class="h-6 w-6 text-green-700" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+            <div className="sm:flex sm:items-start">
+                <div className="mx-auto flex h-7 w-6 items-center justify-center rounded-full ">
+                    <svg className="h-6 w-6 text-green-700" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true">
                         <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
                     </svg>
                 </div>
-                <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left w-full pb-4">
-                    <h3 class="text-lg font-semibold leading-6" id="modal-title">Edit card</h3>
+                <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left w-full pb-4">
+                    <h3 className="text-lg font-semibold leading-6" id="modal-title">Edit card</h3>
                 </div>
             </div>
 
@@ -190,7 +190,7 @@ export default function EditModal({ editCard, setItems, items, setModifying }) {
 
 
             {/* Save button */}
-            <div class="pt-3 modal-action">
+            <div className="pt-3 modal-action">
                 <button type="button" className="hover:cursor-pointer  inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-300 sm:mt-0 sm:w-auto"
                     onClick={() => {
                         setModifying(false);

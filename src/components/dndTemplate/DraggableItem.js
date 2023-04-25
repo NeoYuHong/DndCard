@@ -1,7 +1,7 @@
 import { Utils } from "@/helpers/utils";
 import { useDraggable } from "@dnd-kit/core";
 import { useEffect, useState } from "react";
-import Item from "@/components/dndItem/Item";
+import Item from "@/components/dndData/Item";
 import TemplateItem from "./TemplateItem";
 
 export default function DraggableItem({

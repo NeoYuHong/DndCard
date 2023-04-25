@@ -36,7 +36,8 @@ export default function Header({ items, setItems }) {
                             </li>
                             <li>
                                 <button onClick={() => {
-                                    Utils.exportJson(Utils.parseDataRaw(items.Data))
+
+                                    Utils.exportJson(Utils.parseItems(items))
                                 }}>JSON</button>
                             </li>
                             <li>
@@ -46,6 +47,8 @@ export default function Header({ items, setItems }) {
                             </li>
                         </ul>
                     </div>
+
+
                 </div>
             </div>
         </div>

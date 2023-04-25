@@ -70,7 +70,8 @@
     display: flex;
 }
 .Actions > *:first-child:not(:last-child) {
-    opacity: 0;
+    opacity: 1;
+    /* opacity: 0; */
 }
 .Actions > *:first-child:not(:last-child):focus-visible {
     opacity: 1;

@@ -1,7 +1,7 @@
 import { Utils } from "@/helpers/utils";
 import { useSortable } from "@dnd-kit/sortable";
 import { useEffect, useState } from "react";
-import Item from "@/components/dndItem/Item";
+import Item from "@/components/dndData/Item";
 
 export default function SortableItem({
     disabled,

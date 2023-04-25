@@ -19,11 +19,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from 'react-dom';
 import { Utils } from '@/helpers/utils';
 
-import DroppableContainer from "@/components/dnd/DroppableContainer";
-import Item from "@/components/dndItem/Item";
+import Item from "@/components/dndData/Item";
 import Container from "@/components/dnd/Container";
-import SortableItem from "@/components/dndItem/SortableItem";
-import DraggableItem from "@/components/dndTemplateItem/DraggableItem";
 
 import PreviewModal from "@/components/modal/PreviewModal";
 import AddModal from "@/components/modal/AddModal";
@@ -32,7 +29,10 @@ import DeleteModal from "@/components/modal/DeleteModal";
 import EditModal from "@/components/modal/EditModal";
 
 import Header from "@/components/Header";
-import TemplateItem from '../dndTemplateItem/TemplateItem';
+import TemplateItem from '../dndTemplate/TemplateItem';
+import { TemplateContainer } from '../dndTemplate/TemplateContainer';
+import { DataContainer } from '../dndData/DataContainer';
+import AddTemplateModal from '../modal/AddTemplateModal';
 
 const dropAnimation = {
     sideEffects: defaultDropAnimationSideEffects({
@@ -69,18 +69,6 @@ export function MultipleContainers({
         })
     );
 
-    useEffect(() => {
-
-        // Load data
-        (async () => {
-            const template = await Utils.generateTemplate()
-            const data = await Utils.genData(itemCount)
-            const newItems = { ...items, Template: template, Data: data }
-            setItems(newItems)
-        })()
-
-    }, [])
-
     const [containers, setContainers] = useState(Object.keys(items));
     const [activeItem, setActiveItem] = useState(null);
     const lastOverId = useRef(null);
@@ -96,6 +84,24 @@ export function MultipleContainers({
             coordinateGetter,
         })
     );
+
+    useEffect(() => {
+
+        // Load data
+        (async () => {
+            const template = await Utils.generateTemplate()
+            const data = await Utils.generateData(itemCount)
+            const newItems = { ...items, Template: template, Data: data }
+            setItems(newItems)
+        })()
+
+    }, [])
+
+    useEffect(() => {
+        requestAnimationFrame(() => {
+            recentlyMovedToNewContainer.current = false;
+        });
+    }, [items]);
 
     /**
      * Custom collision detection strategy optimized for multiple containers
@@ -199,117 +205,91 @@ export function MultipleContainers({
         setClonedItems(null);
     };
 
-    useEffect(() => {
-        requestAnimationFrame(() => {
-            recentlyMovedToNewContainer.current = false;
-        });
-    }, [items]);
-
     return (
         <>
             <PreviewModal items={items} />
             <DeleteModal editCard={editCard} setItems={setItems} items={items} setModifying={setModifying} />
             <EditModal editCard={editCard} setItems={setItems} items={items} setModifying={setModifying} />
             <AddModal editCard={editCard} setItems={setItems} />
+            <AddTemplateModal setItems={setItems} />
 
             <Header items={items} setItems={setItems} />
 
-            <div>
-                <DndContext
-                    sensors={sensors}
-                    collisionDetection={collisionDetectionStrategy}
-                    measuring={{
-                        droppable: {
-                            strategy: MeasuringStrategy.Always,
-                        },
-                    }}
-                    onDragStart={onDragStart}
-                    onDragOver={onDragOver}
-                    onDragEnd={onDragEnd}
-                    cancelDrop={cancelDrop}
-                    onDragCancel={onDragCancel}
-                    modifiers={modifiers}
-                >
-                    <div className="gap-9 sm:columns-1 xl:columns-2 h-full">
-                        <SortableContext
-                            items={[...containers]}
-                            strategy={
-                                vertical
-                                    ? verticalListSortingStrategy
-                                    : horizontalListSortingStrategy
-                            }
-                        >
-                            {containers.map((containerId) => (
-                                <DroppableContainer
+            <DndContext
+                sensors={sensors}
+                collisionDetection={collisionDetectionStrategy}
+                measuring={{ droppable: { strategy: MeasuringStrategy.Always, }, }}
+                onDragStart={onDragStart}
+                onDragOver={onDragOver}
+                onDragEnd={onDragEnd}
+                cancelDrop={cancelDrop}
+                onDragCancel={onDragCancel}
+                modifiers={modifiers}
+            >
+                <div className="gap-9 sm:columns-1 xl:columns-2 h-full">
+                    <SortableContext
+                        items={[...containers]}
+                        strategy={vertical ? verticalListSortingStrategy : horizontalListSortingStrategy}
+                    >
+
+                        {/* using map so that container can swap between left and right */}
+                        {containers.map((containerId) => {
+                            if (containerId == 'Template')
+                                return (
+                                    <TemplateContainer
+                                        key={containerId}
+                                        items={items}
+                                        onAddTemplate={handleAddTemplate}
+                                        disabled={isSortingContainer}
+                                        columns={columns}
+                                        scrollable={scrollable}
+                                        containerStyle={containerStyle}
+                                        getItemStyles={getItemStyles}
+                                        handle={handle}
+                                        wrapperStyle={wrapperStyle}
+                                        renderItem={renderItem}
+                                        getIndex={getIndex}
+                                    />
+                                )
+                            return (
+                                <DataContainer
                                     key={containerId}
-                                    id={containerId}
-                                    label={minimal ? undefined : `${containerId} ${containerId === 'Data' ? `(${items.Data.filter((data) => data.id != 'tempfix').length})` : ''}`}
+                                    items={items}
+                                    onAddTemplate={handleAddTemplate}
+                                    disabled={isSortingContainer}
                                     columns={columns}
-                                    items={items[containerId]}
                                     scrollable={scrollable}
-                                    style={containerStyle}
-                                    unstyled={minimal}
-                                >
-                                    <SortableContext items={items[containerId]} strategy={verticalListSortingStrategy}>
-                                        {items[containerId].map((data, index) => {
-                                            if (containerId === 'Template') {
-                                                data.isTemplate = true;
-                                                return (
-                                                    <DraggableItem
-                                                        disabled={isSortingContainer}
-                                                        key={data.id}
-                                                        id={data.id}
-                                                        data={data}
-                                                        index={index}
-                                                        handle={handle}
-                                                        style={getItemStyles}
-                                                        wrapperStyle={wrapperStyle}
-                                                        renderItem={renderItem}
-                                                        containerId={containerId}
-                                                        getIndex={getIndex}
-                                                        onRemove={() => handleRemove(data)}
-                                                        onEdit={() => handleEdit(data)}
-                                                    />
-                                                );
-                                            }
+                                    containerStyle={containerStyle}
+                                    getItemStyles={getItemStyles}
+                                    handle={handle}
+                                    wrapperStyle={wrapperStyle}
+                                    renderItem={renderItem}
+                                    getIndex={getIndex}
+                                    isSortingContainer={isSortingContainer}
+                                    handleRemove={handleRemove}
+                                    handleEdit={handleEdit}
+                                />
+                            )
 
-                                            return (
-                                                <SortableItem
-                                                    disabled={isSortingContainer}
-                                                    key={data.id}
-                                                    id={data.id}
-                                                    data={data}
-                                                    index={index}
-                                                    handle={handle}
-                                                    style={getItemStyles}
-                                                    wrapperStyle={wrapperStyle}
-                                                    renderItem={renderItem}
-                                                    containerId={containerId}
-                                                    getIndex={getIndex}
-                                                    onRemove={() => handleRemove(data)}
-                                                    onEdit={() => handleEdit(data)}
-                                                />
-                                            );
-                                        })}
-                                    </SortableContext>
-                                </DroppableContainer>
-                            ))}
+                        })}
 
-                        </SortableContext>
-                    </div>
-                    {typeof document !== 'undefined' && createPortal(
-                        <DragOverlay adjustScale={adjustScale} dropAnimation={dropAnimation}>
-                            {activeItem
-                                ? containers.includes(activeItem.id)
-                                    ? renderContainerDragOverlay(activeItem)
-                                    : renderSortableItemDragOverlay(activeItem)
-                                : null}
-                        </DragOverlay>,
-                        document.body
-                    )}
-                </DndContext >
+                    </SortableContext>
+                </div>
 
-            </div>
+                {/* Dragging overlay */}
+                {typeof document !== 'undefined' && createPortal(
+                    <DragOverlay adjustScale={adjustScale} dropAnimation={dropAnimation}>
+                        {activeItem
+                            ? containers.includes(activeItem.id)
+                                ? renderContainerDragOverlay(activeItem)
+                                : renderSortableItemDragOverlay(activeItem)
+                            : null}
+                    </DragOverlay>,
+                    document.body
+                )}
+
+            </DndContext >
+
 
         </>
     );
@@ -553,7 +533,6 @@ export function MultipleContainers({
                 unstyled={false}
             >
                 {items[activeContainer.id].map((data, index) => {
-                    console.log(data)
                     if (data.isTemplate === true)
                         return (
                             <TemplateItem
@@ -600,6 +579,10 @@ export function MultipleContainers({
         );
     }
 
+    function handleAddTemplate() {
+        document.getElementById(ModalId.addtemplate).checked = true;
+    }
+
     function handleAddCard() {
         setEditCard(activeItem)
         document.getElementById(ModalId.addcard).checked = true;
@@ -615,13 +598,6 @@ export function MultipleContainers({
         setEditCard(item)
         setModifying(true);
         document.getElementById(ModalId.editcard).checked = true;
-    }
-
-    function getNextContainerId() {
-        const containerIds = Object.keys(items);
-        const lastContainerId = containerIds[containerIds.length - 1];
-
-        return String.fromCharCode(lastContainerId.charCodeAt(0) + 1);
     }
 
 }
