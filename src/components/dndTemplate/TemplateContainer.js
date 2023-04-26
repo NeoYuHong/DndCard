@@ -14,7 +14,9 @@ export const TemplateContainer = ({
     wrapperStyle,
     renderItem,
     handle,
-    getIndex
+    getIndex,
+    onRemove,
+    onEdit
 }) => {
 
     const containerId = 'Template';
@@ -47,8 +49,8 @@ export const TemplateContainer = ({
                             renderItem={renderItem}
                             containerId={containerId}
                             getIndex={getIndex}
-                            onRemove={() => handleRemove(data)}
-                            onEdit={() => handleEdit(data)}
+                            onRemove={() => onRemove(data)}
+                            onEdit={() => onEdit(data)}
                         />
                     );
                 })}

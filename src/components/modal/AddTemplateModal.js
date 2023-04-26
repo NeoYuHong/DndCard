@@ -4,12 +4,13 @@ import { TextArea } from "@/components/form/TextBox";
 import ModalId from "@/components/modal/ModalId";
 import { InputValue } from "../form/InputValue";
 import { CustomInput } from "../form/CustomInput";
-import { Header } from "../form/Header";
+import { Header } from "./Header";
 import { useState } from "react";
 import { Utils } from "@/helpers/utils";
+import { AddCardLogo } from "../logo/AddCardLogo";
 
 
-export default function AddTemplateModal({ setItems }) {
+export default function AddTemplateModal({ items, setItems }) {
 
     const modalId = ModalId.addtemplate;
     const [template, setTemplate] = useState({
@@ -67,6 +68,10 @@ export default function AddTemplateModal({ setItems }) {
 
         const parsedTemplate = { ...template, id: Utils.generateId() }
 
+        const findDuplication = items.Template.find((item) => item.name === template.name) == -1
+
+        console.log(findDuplication)
+
         setItems((items) => ({
             Template: [...items.Template, parsedTemplate],
             Data: items.Data,
@@ -80,27 +85,36 @@ export default function AddTemplateModal({ setItems }) {
         <Modal id={modalId} className={'w-10/12 sm:w-9/12 max-w-5xl h-5/12'}>
 
             {/* Header */}
-            <Header title={'Add Template'} logo={
-                <svg className="h-6 w-6 text-green-700" xmlns="http://www.w3.org/2000/svg" fill="none" enableBackground="new 0 0 24 24" viewBox="0 0 24 24" strokeWidth="1" stroke="currentColor" aria-hidden="true">
-                    <g>
-                        <rect fill="none" /></g><g>
-                        <path d="M20,4H4C2.89,4,2.01,4.89,2.01,6L2,18c0,1.11,0.89,2,2,2h10v-2H4v-6h18V6C22,4.89,21.11,4,20,4z M20,8H4V6h16V8z M24,17v2 h-3v3h-2v-3h-3v-2h3v-3h2v3H24z" />
-                    </g>
-                </svg>
-            } />
+            <Header title={'Add Template'} logo={<AddCardLogo />} />
 
             {/* Form */}
-            <Input label={'Name \n(Duplicate name will be remove when importing)'} id={`${modalId}name`} onBlur={onBlur} />
+            <Input label={'Name'} id={`${modalId}name`} onBlur={onBlur} popupContent={
+                <div>
+                    Name is used to identify the template. It is not displayed on the card.<br />
+                    Duplicate name will be removed when importing.
+                </div>
+            } />
+
             <Input label={'Title'} id={`${modalId}title`} onBlur={onBlur} />
             <TextArea label={'Description'} id={`${modalId}description`} rows={4} onBlur={onBlur} />
             <Input label={'Pre Unit'} id={`${modalId}preunit`} onBlur={onBlur} />
             <Input label={'Post Unit'} id={`${modalId}postunit`} onBlur={onBlur} />
             <InputValue label={'Value'} id={`${modalId}value`} onBlur={onBlur} />
+
             <CustomInput label={'Color'} id={`${modalId}color`}>
                 <input type="color" id={`${modalId}color`} className="w-full " onBlur={onBlur} />
             </CustomInput>
+
             <Input label={'Prompt'} id={`${modalId}prompt`} onBlur={onBlur} />
-            <Input label={'Expression'} id={`${modalId}expression`} onBlur={onBlur} />
+            <Input label={'Expression'} id={`${modalId}expression`} onBlur={onBlur}
+                popupContent={
+                    <div>
+                        <p> eg. value * value + 1 </p>
+                        <p> eg. Math.floor(value * 3.25) </p>
+                        <p> eg. value &lt;= 5 ? value * 2 : value * 3 </p>
+                    </div>
+                }
+            />
 
             {/* Cancel and Add button */}
             <div className="modal-action">
@@ -113,6 +127,6 @@ export default function AddTemplateModal({ setItems }) {
                 </button>
             </div>
 
-        </Modal>
+        </Modal >
     )
 }

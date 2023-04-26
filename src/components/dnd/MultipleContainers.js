@@ -15,7 +15,7 @@ import {
 } from '@dnd-kit/core';
 
 import { arrayMove, horizontalListSortingStrategy, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { createElement, useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from 'react-dom';
 import { Utils } from '@/helpers/utils';
 
@@ -33,6 +33,9 @@ import TemplateItem from '../dndTemplate/TemplateItem';
 import { TemplateContainer } from '../dndTemplate/TemplateContainer';
 import { DataContainer } from '../dndData/DataContainer';
 import AddTemplateModal from '../modal/AddTemplateModal';
+import DeleteTemplateModal from '../modal/DeleteTemplateModal';
+import { Tooltip } from 'react-tooltip';
+import parse from 'html-react-parser';
 
 const dropAnimation = {
     sideEffects: defaultDropAnimationSideEffects({
@@ -84,6 +87,11 @@ export function MultipleContainers({
             coordinateGetter,
         })
     );
+
+    // useEffect(() => {
+    //     if (process.env.NODE_ENV === 'development')
+    //         console.log(items)
+    // }, [items])
 
     useEffect(() => {
 
@@ -205,101 +213,17 @@ export function MultipleContainers({
         setClonedItems(null);
     };
 
-    return (
-        <>
-            <PreviewModal items={items} />
-            <DeleteModal editCard={editCard} setItems={setItems} items={items} setModifying={setModifying} />
-            <EditModal editCard={editCard} setItems={setItems} items={items} setModifying={setModifying} />
-            <AddModal editCard={editCard} setItems={setItems} />
-            <AddTemplateModal setItems={setItems} />
-
-            <Header items={items} setItems={setItems} />
-
-            <DndContext
-                sensors={sensors}
-                collisionDetection={collisionDetectionStrategy}
-                measuring={{ droppable: { strategy: MeasuringStrategy.Always, }, }}
-                onDragStart={onDragStart}
-                onDragOver={onDragOver}
-                onDragEnd={onDragEnd}
-                cancelDrop={cancelDrop}
-                onDragCancel={onDragCancel}
-                modifiers={modifiers}
-            >
-                <div className="gap-9 sm:columns-1 xl:columns-2 h-full">
-                    <SortableContext
-                        items={[...containers]}
-                        strategy={vertical ? verticalListSortingStrategy : horizontalListSortingStrategy}
-                    >
-
-                        {/* using map so that container can swap between left and right */}
-                        {containers.map((containerId) => {
-                            if (containerId == 'Template')
-                                return (
-                                    <TemplateContainer
-                                        key={containerId}
-                                        items={items}
-                                        onAddTemplate={handleAddTemplate}
-                                        disabled={isSortingContainer}
-                                        columns={columns}
-                                        scrollable={scrollable}
-                                        containerStyle={containerStyle}
-                                        getItemStyles={getItemStyles}
-                                        handle={handle}
-                                        wrapperStyle={wrapperStyle}
-                                        renderItem={renderItem}
-                                        getIndex={getIndex}
-                                    />
-                                )
-                            return (
-                                <DataContainer
-                                    key={containerId}
-                                    items={items}
-                                    onAddTemplate={handleAddTemplate}
-                                    disabled={isSortingContainer}
-                                    columns={columns}
-                                    scrollable={scrollable}
-                                    containerStyle={containerStyle}
-                                    getItemStyles={getItemStyles}
-                                    handle={handle}
-                                    wrapperStyle={wrapperStyle}
-                                    renderItem={renderItem}
-                                    getIndex={getIndex}
-                                    isSortingContainer={isSortingContainer}
-                                    handleRemove={handleRemove}
-                                    handleEdit={handleEdit}
-                                />
-                            )
-
-                        })}
-
-                    </SortableContext>
-                </div>
-
-                {/* Dragging overlay */}
-                {typeof document !== 'undefined' && createPortal(
-                    <DragOverlay adjustScale={adjustScale} dropAnimation={dropAnimation}>
-                        {activeItem
-                            ? containers.includes(activeItem.id)
-                                ? renderContainerDragOverlay(activeItem)
-                                : renderSortableItemDragOverlay(activeItem)
-                            : null}
-                    </DragOverlay>,
-                    document.body
-                )}
-
-            </DndContext >
-
-
-        </>
-    );
-
     function onDragStart({ active }) {
+
+        if (isModifying) return
+
         setActiveItem(active);
         setClonedItems(items);
     }
 
     function onDragEnd({ active, over }) {
+
+        if (isModifying) return
 
         // if item was dropped outside of container
         if (active.data.current.invis && active.data.current.new) {
@@ -364,6 +288,8 @@ export function MultipleContainers({
     }
 
     function onDragOver({ active, over }) {
+
+        if (isModifying) return
 
         const overId = over?.id;
 
@@ -579,6 +505,26 @@ export function MultipleContainers({
         );
     }
 
+    function handleRemoveTemplate(item) {
+
+        setEditCard(item)
+
+        setModifying(true);
+
+        document.getElementById(ModalId.deletetemplate).checked = true;
+
+    }
+
+    function handleEditTemplate(item) {
+
+        setEditCard(item)
+
+        setModifying(true);
+
+        document.getElementById(ModalId.edittemplate).checked = true;
+
+    }
+
     function handleAddTemplate() {
 
         // Open modal to add template
@@ -621,5 +567,117 @@ export function MultipleContainers({
         document.getElementById(ModalId.editcard).checked = true;
 
     }
+
+    return (
+        <>
+            <Tooltip
+                id="tooltip"
+                className='z-[99999999999999999999999]'
+                render={({ content, activeAnchor }) => {
+                    const Content = () => {
+                        let result = null
+                        if (activeAnchor?.getAttribute('data-content'))
+                            result = parse(activeAnchor?.getAttribute('data-content'))
+                        return result
+                    }
+                    return (
+                        <span>
+                            <Content />
+                        </span>
+                    )
+                }}
+            />
+
+            <PreviewModal items={items} />
+
+            <DeleteModal editCard={editCard} setItems={setItems} items={items} setModifying={setModifying} />
+            <EditModal editCard={editCard} setItems={setItems} items={items} setModifying={setModifying} />
+            <AddModal editCard={editCard} setItems={setItems} />
+
+            <AddTemplateModal setItems={setItems} items={items} />
+            <DeleteTemplateModal editCard={editCard} setItems={setItems} items={items} setModifying={setModifying} />
+
+            <Header items={items} setItems={setItems} />
+
+            <DndContext
+                sensors={sensors}
+                collisionDetection={collisionDetectionStrategy}
+                measuring={{ droppable: { strategy: MeasuringStrategy.Always, }, }}
+                onDragStart={onDragStart}
+                onDragOver={onDragOver}
+                onDragEnd={onDragEnd}
+                cancelDrop={cancelDrop}
+                onDragCancel={onDragCancel}
+                modifiers={modifiers}
+            >
+                <div className="gap-9 xs:columns-1 lg:columns-2 h-full p-10">
+                    <SortableContext
+                        items={[...containers]}
+                        strategy={vertical ? verticalListSortingStrategy : horizontalListSortingStrategy}
+                    >
+
+                        {/* using map so that container can be drag from left and right */}
+                        {containers.map((containerId) => {
+                            if (containerId == 'Template')
+                                return (
+                                    <TemplateContainer
+                                        key={containerId}
+                                        items={items}
+                                        onAddTemplate={handleAddTemplate}
+                                        disabled={isSortingContainer}
+                                        columns={columns}
+                                        scrollable={scrollable}
+                                        containerStyle={containerStyle}
+                                        getItemStyles={getItemStyles}
+                                        handle={handle}
+                                        wrapperStyle={wrapperStyle}
+                                        renderItem={renderItem}
+                                        getIndex={getIndex}
+                                        onRemove={handleRemoveTemplate}
+                                        onEdit={handleEditTemplate}
+                                    />
+                                )
+                            return (
+                                <DataContainer
+                                    key={containerId}
+                                    items={items}
+                                    onAddTemplate={handleAddTemplate}
+                                    disabled={isSortingContainer}
+                                    columns={columns}
+                                    scrollable={scrollable}
+                                    containerStyle={containerStyle}
+                                    getItemStyles={getItemStyles}
+                                    handle={handle}
+                                    wrapperStyle={wrapperStyle}
+                                    renderItem={renderItem}
+                                    getIndex={getIndex}
+                                    isSortingContainer={isSortingContainer}
+                                    handleRemove={handleRemove}
+                                    handleEdit={handleEdit}
+                                />
+                            )
+
+                        })}
+
+                    </SortableContext>
+                </div>
+
+                {/* Dragging overlay */}
+                {typeof document !== 'undefined' && createPortal(
+                    <DragOverlay adjustScale={adjustScale} dropAnimation={dropAnimation}>
+                        {activeItem
+                            ? containers.includes(activeItem.id)
+                                ? renderContainerDragOverlay(activeItem)
+                                : renderSortableItemDragOverlay(activeItem)
+                            : null}
+                    </DragOverlay>,
+                    document.body
+                )}
+
+            </DndContext >
+
+
+        </>
+    );
 
 }

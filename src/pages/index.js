@@ -4,7 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export default function Index() {
   return (
-    <div className="p-10 flex flex-col h-full gap-9">
+    <div className="flex flex-col h-full">
       <MultipleContainers
         // containerStyle={{ marginBottom: '2.5rem' }}
         scrollable={true}

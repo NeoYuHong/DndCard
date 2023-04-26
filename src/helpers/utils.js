@@ -122,7 +122,7 @@ export class Utils {
                     throw 'Invalid data structure!'
 
                 const parsedTemplate = contents.Template.map((item) => {
-                    item.id = item.name;
+                    item.id = this.generateId();
                     return item;
                 })
 

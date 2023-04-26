@@ -1,9 +1,11 @@
 import { Utils } from "@/helpers/utils";
 import Modal from "./Modal";
+import ModalId from "./ModalId";
 
 export default function PreviewModal({ items }) {
 
-    const modalId = "previewcard";
+    const modalId = ModalId.previewcard;
+
     items = Utils.parseData(items.Data);
 
     return (
