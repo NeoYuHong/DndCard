@@ -572,7 +572,7 @@ export function MultipleContainers({
         <>
             <Tooltip
                 id="tooltip"
-                className='z-[99999999999999999999999]'
+                style={{ zIndex: 10000 }}
                 render={({ content, activeAnchor }) => {
                     const Content = () => {
                         let result = null
