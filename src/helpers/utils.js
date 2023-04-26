@@ -6,9 +6,9 @@ import { toast } from "react-toastify";
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 
-const defaultInitializer = (index) => index;
 export class Utils {
 
+    // Export only data to PDF file
     static exportPDF(data) {
         pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -51,26 +51,7 @@ export class Utils {
         pdfMake.createPdf(documentDefinition).download(this.generateFilename('pdf'));
     }
 
-    static generateId() {
-        return nanoid(11)
-    }
-
-    static async generateTemplate() {
-        try {
-            const output = card
-                .filter((item) => !item.disabled)
-                .map((item) => {
-                    item.id = this.generateId();
-                    return item;
-                })
-
-            return output;
-        } catch (error) {
-            console.log(error)
-            return undefined
-        }
-    }
-
+    // Export only data to Excel file
     static async exportExcel(data) {
         const filename = `${this.generateFilename('xlsx')}`;
         const ws = XLSX.utils.json_to_sheet(data);
@@ -79,43 +60,7 @@ export class Utils {
         XLSX.writeFile(wb, filename);
     }
 
-    static parseItems(data) {
-        return {
-            Data: this.parseDataRaw(data.Data),
-            Template: this.parseTemplate(data.Template)
-        }
-    }
-
-    static parseTemplate(file) {
-        file = file.map((item) => {
-            delete item.id
-            return item;
-        });
-        return file
-    }
-
-    static parseData(file) {
-        file = file.filter((item) => item.id !== "tempfix")
-        file = file.map(({ title, description, value, manualValue, expression }, index) => ({ SN: index + 1, title, description, value: manualValue?.length > 0 ? manualValue : this.computeValue(value, expression), }));
-        return file
-    }
-
-    static parseDataRaw(data) {
-        return data
-            .filter((item) => item.id !== "tempfix")
-            .map((item) => {
-                delete item.isTemplate
-                delete item.id
-                return item;
-            })
-    }
-
-    static generateFilename(extension) {
-        const timestamp = new Date().getTime();
-        const filename = `file_${timestamp}.${extension}`;
-        return filename;
-    }
-
+    // Export both template and data to JSON file
     static exportJson(data) {
 
         // Convert the JSON object to a string
@@ -143,13 +88,7 @@ export class Utils {
 
     }
 
-    static validateItem(items) {
-        if (!items) return false;
-        if (!items['Data']) return false;
-        if (!items['Template']) return false;
-        return true;
-    }
-
+    // Import both template and data to JSON file
     static async importJson(event, setItems) {
 
         if (!event || !event.target || !event.target.files || event.target.files.length === 0) {
@@ -260,16 +199,87 @@ export class Utils {
 
     }
 
-    static createRange(length, initializer = defaultInitializer) {
-        return [...new Array(length)].map((_, index) => initializer(index));
+    // Generate random ID for DND items
+    static generateId() {
+        return nanoid(11)
     }
 
+    // Load template from JSON file and add random ID for each template item
+    static async generateTemplate() {
+        try {
+            const output = card
+                .filter((item) => !item.disabled)
+                .map((item) => {
+                    item.id = this.generateId();
+                    return item;
+                })
+
+            return output;
+        } catch (error) {
+            console.log(error)
+            return undefined
+        }
+    }
+
+    // Parse data and template
+    static parseItems(data) {
+        return {
+            Data: this.parseDataRaw(data.Data),
+            Template: this.parseTemplate(data.Template)
+        }
+    }
+
+    // Parse template
+    static parseTemplate(file) {
+        file = file.map((item) => {
+            delete item.id
+            return item;
+        });
+        return file
+    }
+
+    // Parse data (SN, title, description, value)
+    static parseData(file) {
+        file = file.filter((item) => item.id !== "tempfix")
+        file = file.map(({ title, description, value, manualValue, expression }, index) => ({ SN: index + 1, title, description, value: manualValue?.length > 0 ? manualValue : this.computeValue(value, expression), }));
+        return file
+    }
+
+    // Parse data (name, title, description, preUnit, postUnit, value, color, prompt, expression, isTemplate)
+    static parseDataRaw(data) {
+        return data
+            .filter((item) => item.id !== "tempfix")
+            .map((item) => {
+                delete item.isTemplate
+                delete item.id
+                return item;
+            })
+    }
+
+    // Generate filename file_<timestamp>.<extension>
+    static generateFilename(extension) {
+        const timestamp = new Date().getTime();
+        const filename = `file_${timestamp}.${extension}`;
+        return filename;
+    }
+
+    // Validate data and template exists in items
+    static validateItem(items) {
+        if (!items) return false;
+        if (!items['Data']) return false;
+        if (!items['Template']) return false;
+        return true;
+    }
+
+    // When there is no data, hovering over the data container does nothing.
+    // Using this invisible item as a temp fix so that there is atleast 1 item in the data container
     static tempfix = {
         "id": 'tempfix',
         "name": "temp fix",
         "invis": true,
     }
 
+    // Generate data to test the app
     static async generateData(length) {
         // TODO: if length is 0, can't drag item in. Using this as a temp fix
         if (length == 0)
@@ -280,16 +290,18 @@ export class Utils {
                 "name": "Training Sessions Item",
                 "title": `Training Sessions ${index + 1}`,
                 "description": "Calculate training session cost",
-                "unit": "$",
+                "preUnit": "hr",
+                "postUnit": "$",
                 "value": "",
-                "multiplier": "1.75",
+                "color": "#FF69B4",
+                "prompt": "Enter the number of hours",
                 "expression": "value * 1.75",
-                "color": "red"
             }
         });
     }
 
-    static genColor() {
+    // Generate random color
+    static generateColor() {
         var color = '#';
         for (var i = 0; i < 6; i++) {
             color += Math.floor(Math.random() * 10);
@@ -297,6 +309,7 @@ export class Utils {
         return color;
     }
 
+    // Get pre defined color
     static getColor(color) {
         switch (String(color).toUpperCase()) {
             case 'A':
@@ -409,6 +422,7 @@ export class Utils {
         return undefined;
     };
 
+    // Compute value using expression
     static computeValue(value, expression) {
         try {
             if (!expression || !value) return 0;
@@ -419,6 +433,8 @@ export class Utils {
         }
     }
 
+    // Prevent "e", "E", "+", "-" from being inputted into number input field.
+    // Copy pasting still works
     static preventExponentialInput(event) {
         const key = event.key;
         if (key === 'E' || key === 'e' || key === '+' || key === '-') {

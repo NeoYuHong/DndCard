@@ -580,24 +580,46 @@ export function MultipleContainers({
     }
 
     function handleAddTemplate() {
+
+        // Open modal to add template
         document.getElementById(ModalId.addtemplate).checked = true;
+
     }
 
     function handleAddCard() {
+
+        // Add card to be added
         setEditCard(activeItem)
+
+        // Open modal to add card
         document.getElementById(ModalId.addcard).checked = true;
+
     }
 
     function handleRemove(item) {
+
+        // Add card to be removed
         setEditCard(item)
+
+        // Set modifying to true to prevent card from being dragged when clicked
         setModifying(true);
+
+        // Open modal to delete card
         document.getElementById(ModalId.deletecard).checked = true;
+
     }
 
     function handleEdit(item) {
+
+        // Add card to edit
         setEditCard(item)
+
+        // Set modifying to true to prevent card from being dragged when clicked
         setModifying(true);
+
+        // Open modal to edit card
         document.getElementById(ModalId.editcard).checked = true;
+
     }
 
 }

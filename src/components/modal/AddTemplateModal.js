@@ -79,6 +79,7 @@ export default function AddTemplateModal({ setItems }) {
     return (
         <Modal id={modalId} className={'w-10/12 sm:w-9/12 max-w-5xl h-5/12'}>
 
+            {/* Header */}
             <Header title={'Add Template'} logo={
                 <svg className="h-6 w-6 text-green-700" xmlns="http://www.w3.org/2000/svg" fill="none" enableBackground="new 0 0 24 24" viewBox="0 0 24 24" strokeWidth="1" stroke="currentColor" aria-hidden="true">
                     <g>
@@ -88,21 +89,20 @@ export default function AddTemplateModal({ setItems }) {
                 </svg>
             } />
 
+            {/* Form */}
             <Input label={'Name \n(Duplicate name will be remove when importing)'} id={`${modalId}name`} onBlur={onBlur} />
             <Input label={'Title'} id={`${modalId}title`} onBlur={onBlur} />
             <TextArea label={'Description'} id={`${modalId}description`} rows={4} onBlur={onBlur} />
             <Input label={'Pre Unit'} id={`${modalId}preunit`} onBlur={onBlur} />
             <Input label={'Post Unit'} id={`${modalId}postunit`} onBlur={onBlur} />
             <InputValue label={'Value'} id={`${modalId}value`} onBlur={onBlur} />
-
             <CustomInput label={'Color'} id={`${modalId}color`}>
                 <input type="color" id={`${modalId}color`} className="w-full " onBlur={onBlur} />
             </CustomInput>
-
             <Input label={'Prompt'} id={`${modalId}prompt`} onBlur={onBlur} />
             <Input label={'Expression'} id={`${modalId}expression`} onBlur={onBlur} />
 
-            {/* Add button */}
+            {/* Cancel and Add button */}
             <div className="modal-action">
                 <label type="button" htmlFor={modalId} className="hover:cursor-pointer inline-flex w-full justify-center rounded-md bg-white  px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-300 sm:mt-0 sm:w-auto">
                     Cancel
