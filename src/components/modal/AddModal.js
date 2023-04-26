@@ -157,7 +157,7 @@ export default function AddModal({ setItems, editCard }) {
 
                 {/* Value */}
                 <div className="grid grid-cols-3 py-2">
-                    <label className="col-span-3 pb-2 sm:col-span-1 sm:pb-0" htmlFor={modalId + "value"}>Value{editCard.data.current.preUnit && ` (${editCard.data.current.preUnit})`}:</label>
+                    <label className="col-span-3 pb-2 sm:col-span-1 sm:pb-0" htmlFor={modalId + "value"}>{editCard.data.current.prompt ?? 'Value'}{editCard.data.current.preUnit && ` (${editCard.data.current.preUnit})`}:</label>
                     <div className="col-span-3 sm:col-span-2 w-full grid grid-cols-2 gap-3">
                         <input type="text" className="input input-bordered input-sm w-full" name={modalId + "value"} id={modalId + "value"} defaultValue={card.value} ref={value} onBlur={onBlurValue} />
                         <input type="number" className="input input-bordered input-sm w-full col-span-1 bg-base-200" readOnly disabled id={`${modalId}calvalue`} />
