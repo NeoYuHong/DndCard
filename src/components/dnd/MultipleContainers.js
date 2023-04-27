@@ -36,6 +36,7 @@ import AddTemplateModal from '../modal/AddTemplateModal';
 import DeleteTemplateModal from '../modal/DeleteTemplateModal';
 import { Tooltip } from 'react-tooltip';
 import parse from 'html-react-parser';
+import EditTemplateModal from '../modal/EditTemplateModal';
 
 const dropAnimation = {
     sideEffects: defaultDropAnimationSideEffects({
@@ -590,12 +591,13 @@ export function MultipleContainers({
 
             <PreviewModal items={items} />
 
+            <AddModal editCard={editCard} setItems={setItems} />
             <DeleteModal editCard={editCard} setItems={setItems} items={items} setModifying={setModifying} />
             <EditModal editCard={editCard} setItems={setItems} items={items} setModifying={setModifying} />
-            <AddModal editCard={editCard} setItems={setItems} />
 
             <AddTemplateModal setItems={setItems} items={items} />
             <DeleteTemplateModal editCard={editCard} setItems={setItems} items={items} setModifying={setModifying} />
+            <EditTemplateModal editCard={editCard} setItems={setItems} items={items} setModifying={setModifying} />
 
             <Header items={items} setItems={setItems} />
 

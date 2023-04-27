@@ -132,7 +132,8 @@ const TemplateItem = memo(
                         </div>
 
                         <div className={styles.Actions + ' col-span-12 xxs:col-span-2'}>
-                            {!active && !data.isTemplate && <Edit className={styles.Remove} onMouseDown={onEdit} />}
+                            {!active && <Edit className={styles.Remove} onMouseDown={onEdit} />}
+
                             {onRemove ? (
                                 <Remove className={styles.Remove} onMouseDown={onRemove} />
                             ) : null}

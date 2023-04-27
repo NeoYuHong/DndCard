@@ -8,6 +8,7 @@ import { Header } from "./Header";
 import { useState } from "react";
 import { Utils } from "@/helpers/utils";
 import { AddCardLogo } from "../logo/AddCardLogo";
+import { ExpressionHint, NameHint } from "../dndTemplate/FieldHint";
 
 
 export default function AddTemplateModal({ items, setItems }) {
@@ -88,12 +89,7 @@ export default function AddTemplateModal({ items, setItems }) {
             <Header title={'Add Template'} logo={<AddCardLogo />} />
 
             {/* Form */}
-            <Input label={'Name'} id={`${modalId}name`} onBlur={onBlur} popupContent={
-                <div>
-                    Name is used to identify the template. It is not displayed on the card.<br />
-                    Duplicate name will be removed when importing.
-                </div>
-            } />
+            <Input label={'Name'} id={`${modalId}name`} onBlur={onBlur} popupContent={<NameHint />} />
 
             <Input label={'Title'} id={`${modalId}title`} onBlur={onBlur} />
             <TextArea label={'Description'} id={`${modalId}description`} rows={4} onBlur={onBlur} />
@@ -106,15 +102,7 @@ export default function AddTemplateModal({ items, setItems }) {
             </CustomInput>
 
             <Input label={'Prompt'} id={`${modalId}prompt`} onBlur={onBlur} />
-            <Input label={'Expression'} id={`${modalId}expression`} onBlur={onBlur}
-                popupContent={
-                    <div>
-                        <p> eg. value * value + 1 </p>
-                        <p> eg. Math.floor(value * 3.25) </p>
-                        <p> eg. value &lt;= 5 ? value * 2 : value * 3 </p>
-                    </div>
-                }
-            />
+            <Input label={'Expression'} id={`${modalId}expression`} onBlur={onBlur} popupContent={<ExpressionHint />} />
 
             {/* Cancel and Add button */}
             <div className="modal-action">
