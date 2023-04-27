@@ -1,17 +1,34 @@
 import Modal from "@/components/modal/Modal";
 import { nanoid } from "nanoid";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import ModalId from "./ModalId";
 import { Utils } from "@/helpers/utils";
+import { Header } from "./Header";
+import { AddCardLogo } from "../logo/AddCardLogo";
+import { Input } from "../form/Input";
+import { TextArea } from "../form/TextBox";
+import { InputValue } from "../form/InputValue";
 
 export default function AddModal({ setItems, editCard }) {
 
     const modalId = ModalId.addcard;
 
-    const value = useRef(null)
-    const title = useRef(null)
-    const description = useRef(null)
-    const manualValue = useRef(null)
+    useEffect(() => {
+
+        if (editCard == null || !document.getElementById(modalId).checked) return;
+        const card = editCard.data.current;
+
+        document.getElementById(`${modalId}title`).value = card.title;
+        document.getElementById(`${modalId}description`).value = card.description;
+        document.getElementById(`${modalId}value`).value = card.value;
+        document.getElementById(`${modalId}calvalue`).value = Utils.computeValue(card.value, card.expression);
+        document.getElementById(`${modalId}manualvalue`).value = card.manualValue;
+
+        document.getElementById(`${modalId}value`).disabled = card.manualValue != null;
+        document.getElementById(`${modalId}value`).readonly = card.manualValue != null;
+
+    }, [editCard])
+
 
     function removeCard() {
 
@@ -40,6 +57,14 @@ export default function AddModal({ setItems, editCard }) {
 
     function addCard(e) {
 
+        const editedFields = {
+            ...editCard.data.current,
+            title: document.getElementById(`${modalId}title`).value,
+            description: document.getElementById(`${modalId}description`).value,
+            value: document.getElementById(`${modalId}value`).value,
+            manualValue: document.getElementById(`${modalId}manualvalue`).value,
+        }
+
         e.preventDefault();
 
         // Validation regex
@@ -47,10 +72,10 @@ export default function AddModal({ setItems, editCard }) {
         const validateManualValue = new RegExp(/^[0-9.]*$/);
 
         // if there is manual value 
-        if (manualValue.current.value.length > 0) {
+        if (editedFields.manualValue.length > 0) {
 
             // check if manual value is valid
-            if (!validateManualValue.test(manualValue.current.value)) {
+            if (!validateManualValue.test(editedFields.manualValue)) {
                 document.getElementById(`${modalId}invalid`).classList.remove("hidden");
                 document.getElementById(`${modalId}invalidmessage`).innerHTML = "Warning: Please input valid number for Manual Value!";
                 return
@@ -59,7 +84,7 @@ export default function AddModal({ setItems, editCard }) {
         } else {
 
             // check if value is valid
-            if (!validateValue.test(value.current.value)) {
+            if (!validateValue.test(editedFields.value)) {
                 document.getElementById(`${modalId}invalid`).classList.remove("hidden");
                 document.getElementById(`${modalId}invalidmessage`).innerHTML = "Warning: Please input valid number for Value!";
                 return
@@ -72,12 +97,6 @@ export default function AddModal({ setItems, editCard }) {
 
         if (!editCard) return;
 
-        editCard.data.current.id = nanoid(11);
-        editCard.data.current.title = title.current.value;
-        editCard.data.current.description = description.current.value;
-        editCard.data.current.value = value.current.value;
-        editCard.data.current.manualValue = manualValue.current.value;
-
         // Close modal
         document.getElementById(modalId).checked = false;
 
@@ -88,6 +107,10 @@ export default function AddModal({ setItems, editCard }) {
             return setItems((items) => ({
                 ...items,
                 Data: items['Data'].filter((data) => !(items['Data'].length > 0 && data.id == 'tempfix')).map((data) => {
+                    if (data.id == editCard.id) {
+                        delete editedFields.new;
+                        return editedFields;
+                    }
                     delete data.new;
                     return data;
                 }),
@@ -98,82 +121,24 @@ export default function AddModal({ setItems, editCard }) {
     };
 
     function onBlurManual(e) {
+
+        const value = document.getElementById(`${modalId}value`);
+        const warnManual = document.getElementById(`${modalId}warnmanual`);
+
         if (e.currentTarget.value.length > 0) {
-            document.getElementById(`${modalId}hintmanualvalue`).classList.remove("hidden");
-            value.current.disabled = true;
-            value.current.readonly = true;
+            warnManual.classList.remove("hidden");
+            value.disabled = true;
+            value.readonly = true;
         } else {
-            document.getElementById(`${modalId}hintmanualvalue`).classList.add("hidden");
-            value.current.disabled = false;
-            value.current.readonly = false;
+            warnManual.classList.add("hidden");
+            value.disabled = false;
+            value.readonly = false;
         }
     }
 
     function onBlurValue(e) {
-        document.getElementById(`${modalId}calvalue`).value = Utils.computeValue(value.current.value, editCard.data.current.expression);
-    }
-
-    const ModalHeader = () => {
-        return (
-            <div className="sm:flex sm:items-start">
-                <div className="mx-auto flex h-7 w-6 items-center justify-center rounded-full">
-
-                    <svg className="h-6 w-6 text-green-700" xmlns="http://www.w3.org/2000/svg" fill="none" enableBackground="new 0 0 24 24" viewBox="0 0 24 24" strokeWidth="1" stroke="currentColor" aria-hidden="true">
-                        <g>
-                            <rect fill="none" /></g><g>
-                            <path d="M20,4H4C2.89,4,2.01,4.89,2.01,6L2,18c0,1.11,0.89,2,2,2h10v-2H4v-6h18V6C22,4.89,21.11,4,20,4z M20,8H4V6h16V8z M24,17v2 h-3v3h-2v-3h-3v-2h3v-3h2v3H24z" />
-                        </g>
-                    </svg>
-
-                </div>
-                <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left w-full pb-4">
-                    <h3 className="text-lg font-semibold leading-6" id="modal-title">Add card</h3>
-                </div>
-            </div>
-        )
-    }
-
-
-    const ModalForm = () => {
-
-        if (!editCard || !document.getElementById(modalId).checked) return;
-
         const card = editCard.data.current;
-
-        return (
-            <div>
-
-                {/* Title */}
-                <div className="grid grid-cols-3 py-2 w-full">
-                    <label className="col-span-3 pb-2 sm:col-span-1 sm:pb-0" htmlFor={modalId + "title"}>Title: </label>
-                    <input autoFocus={true} type="text" className="col-span-3 sm:col-span-2 input input-bordered input-sm w-full" name={modalId + "title"} id={modalId + "title"} defaultValue={card.title} ref={title} />
-                </div>
-
-                {/* Description */}
-                <div className="grid grid-cols-3 py-2">
-                    <label className="col-span-3 pb-2 sm:col-span-1 sm:pb-0" htmlFor={modalId + "description"}>Description: </label>
-                    <textarea rows="5" className="col-span-3 sm:col-span-2 input input-bordered input-sm w-full h-full" name={modalId + "description"} id={modalId + "description"} defaultValue={card.description} ref={description}></textarea>
-                </div>
-
-                {/* Value */}
-                <div className="grid grid-cols-3 py-2">
-                    <label className="col-span-3 pb-2 sm:col-span-1 sm:pb-0" htmlFor={modalId + "value"}>{editCard.data.current.prompt ?? 'Value'}{editCard.data.current.preUnit && ` (${editCard.data.current.preUnit})`}:</label>
-                    <div className="col-span-3 sm:col-span-2 w-full grid grid-cols-2 gap-3">
-                        <input type="text" className="input input-bordered input-sm w-full" name={modalId + "value"} id={modalId + "value"} defaultValue={card.value} ref={value} onBlur={onBlurValue} />
-                        <input type="number" className="input input-bordered input-sm w-full col-span-1 bg-base-200" readOnly disabled id={`${modalId}calvalue`} />
-                    </div>
-                </div>
-
-                {/* Manual */}
-                <div className="grid grid-cols-3 py-2">
-                    <label className="col-span-3 pb-2 sm:col-span-1 sm:pb-0" htmlFor={modalId + "manualvalue"}>Manual Value {card.preUnit && `(${card.preUnit})`}:</label>
-                    <input onKeyDown={Utils.preventExponentialInput} type="number" className="col-span-3 sm:col-span-2 input input-bordered input-sm w-full" onBlur={onBlurManual} name={modalId + "manualvalue"} id={modalId + "manualvalue"} defaultValue={card.manualValue ?? ''} ref={manualValue} />
-                </div>
-
-                <p id={`${modalId}hintmanualvalue`} className="text-orange-500 text-right text-sm hidden justify-end">Manual Value will overwrite Value! Leave it empty if you do not wish to overwrite.</p>
-
-            </div>
-        )
+        document.getElementById(`${modalId}calvalue`).value = Utils.computeValue(document.getElementById(`${modalId}value`).value, card.expression);
     }
 
     const CustomCloseButton = () => {
@@ -185,8 +150,29 @@ export default function AddModal({ setItems, editCard }) {
     return (
         <Modal id={modalId} className={'w-10/12 sm:w-7/12 max-w-5xl h-5/12'} closeElement={<CustomCloseButton />}>
 
-            <ModalHeader />
-            <ModalForm />
+            {/* Header */}
+            <Header title={'Add Card'} logo={<AddCardLogo />} />
+
+            {/* Form */}
+            {editCard && <>
+
+                <Input autoFocus={true} label={'Title'} id={`${modalId}title`} />
+                <TextArea label={'Description'} id={`${modalId}description`} rows={4} />
+
+                {/* Value */}
+                <div className="grid grid-cols-3 py-2">
+                    <label className="col-span-3 pb-2 sm:col-span-1 sm:pb-0" htmlFor={modalId + "value"}>{editCard.data?.current.prompt ?? 'Value'}{editCard.data?.current.preUnit && ` (${editCard.data?.current.preUnit})`}:</label>
+                    <div className="col-span-3 sm:col-span-2 w-full grid grid-cols-2 gap-3">
+                        <input type="text" className="input input-bordered input-sm w-full" name={modalId + "value"} id={modalId + "value"} onBlur={onBlurValue} />
+                        <input type="number" className="input input-bordered input-sm w-full col-span-1 bg-base-200" readOnly disabled id={`${modalId}calvalue`} />
+                    </div>
+                </div>
+
+                <InputValue label={'Manual value'} id={`${modalId}manualvalue`} onBlur={onBlurManual} />
+
+                <p id={`${modalId}warnmanual`} className="text-orange-500 text-right text-sm hidden justify-end">Manual Value will overwrite Value! Leave it empty if you do not wish to overwrite.</p>
+
+            </>}
 
             {/* Add button */}
             <div className="modal-action">
