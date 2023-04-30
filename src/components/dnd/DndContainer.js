@@ -34,8 +34,6 @@ import { TemplateContainer } from '../dndTemplate/TemplateContainer';
 import { DataContainer } from '../dndData/DataContainer';
 import AddTemplateModal from '../modal/AddTemplateModal';
 import DeleteTemplateModal from '../modal/DeleteTemplateModal';
-import { Tooltip } from 'react-tooltip';
-import parse from 'html-react-parser';
 import EditTemplateModal from '../modal/EditTemplateModal';
 
 const dropAnimation = {
@@ -48,7 +46,7 @@ const dropAnimation = {
     }),
 };
 
-export function MultipleContainers({
+export function DndContainer({
     adjustScale = false,
     itemCount = 0,
     cancelDrop,
@@ -88,11 +86,6 @@ export function MultipleContainers({
             coordinateGetter,
         })
     );
-
-    // useEffect(() => {
-    //     if (process.env.NODE_ENV === 'development')
-    //         console.log(items)
-    // }, [items])
 
     useEffect(() => {
 
@@ -571,23 +564,6 @@ export function MultipleContainers({
 
     return (
         <>
-            <Tooltip
-                id="tooltip"
-                style={{ zIndex: 10000 }}
-                render={({ content, activeAnchor }) => {
-                    const Content = () => {
-                        let result = null
-                        if (activeAnchor?.getAttribute('data-content'))
-                            result = parse(activeAnchor?.getAttribute('data-content'))
-                        return result
-                    }
-                    return (
-                        <span>
-                            <Content />
-                        </span>
-                    )
-                }}
-            />
 
             <PreviewModal items={items} />
 
