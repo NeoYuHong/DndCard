@@ -27,7 +27,7 @@
     "react-dom": "^18.2.0",
     "react-toastify": "^9.1.2",
     "react-tooltip": "^5.11.1",
-    "xlsx": "^0.18.5"
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.19.3/xlsx-0.19.3.tgz"
   },
   "devDependencies": {
     "@types/node": "18.15.9",
